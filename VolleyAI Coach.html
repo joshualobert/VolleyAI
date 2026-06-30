@@ -5,252 +5,246 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VolleyAI Coach</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script
+  async
+  crossorigin="anonymous"
+  data-clerk-publishable-key="pk_test_cmVsYXRpdmUtd2lsZGNhdC03Mi5jbGVyay5hY2NvdW50cy5kZXYk"
+  src="https://relative-wildcat-72.clerk.accounts.dev/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"
+  type="text/javascript"
+></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --accent:    #1d4ed8;
-    --accent-h:  #1e40af;
-    --accent-lt: #eff6ff;
-    --accent-100:#dbeafe;
-    --green:     #059669;
-    --green-100: #d1fae5;
-    --red:       #dc2626;
-    --red-100:   #fee2e2;
-    --yellow-100:#fef9c3;
-    --yellow-700:#92400e;
-    --navy:      #0f172a;
-    --gray-900:  #0f172a;
-    --gray-700:  #334155;
-    --gray-500:  #64748b;
-    --gray-400:  #94a3b8;
-    --gray-200:  #e2e8f0;
-    --gray-100:  #f1f5f9;
-    --gray-50:   #f8fafc;
+    --ink:       #171717;
+    --body:      #4d4d4d;
+    --mute:      #8f8f8f;
+    --faint:     #a1a1a1;
+    --hairline:  #ebebeb;
+    --canvas:    #fafafa;
+    --elevated:  #ffffff;
+    --link:      #0070f3;
+    --green:     #1a7a3c;
+    --green-100: #d3f4e0;
+    --red:       #c50000;
+    --red-100:   #ffe0e0;
+    --yellow-100:#ffefcf;
+    --yellow-700:#ab570a;
+    /* aliases for existing class references */
+    --accent:    #171717;
+    --accent-h:  #000000;
+    --accent-lt: #f2f2f2;
+    --accent-100:#e8e8e8;
+    --navy:      #171717;
+    --gray-900:  #171717;
+    --gray-700:  #4d4d4d;
+    --gray-500:  #8f8f8f;
+    --gray-400:  #a1a1a1;
+    --gray-200:  #ebebeb;
+    --gray-100:  #f2f2f2;
+    --gray-50:   #fafafa;
     --white:     #ffffff;
-    --radius:    10px;
+    --radius:    12px;
     --radius-sm: 6px;
-    --shadow-sm: 0 1px 3px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04);
-    --shadow:    0 2px 8px rgba(15,23,42,.08), 0 1px 3px rgba(15,23,42,.05);
-    --shadow-md: 0 4px 16px rgba(15,23,42,.1), 0 2px 6px rgba(15,23,42,.06);
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #eef1f6; color: var(--gray-900); font-size: 14px; -webkit-font-smoothing: antialiased; }
+  body { font-family: 'Geist', system-ui, Arial, sans-serif; background: var(--canvas); color: var(--body); font-size: 14px; line-height: 20px; -webkit-font-smoothing: antialiased; }
   a { text-decoration: none; color: inherit; }
   button { cursor: pointer; border: none; background: none; font: inherit; }
   input, select, textarea { font: inherit; }
 
   /* ── Layout ── */
-  #app { display: flex; height: 100vh; overflow: hidden; }
+  #app { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 
-  #sidebar {
-    width: 220px; background: var(--navy); color: #fff;
-    display: flex; flex-direction: column; flex-shrink: 0;
-  }
-  #sidebar .logo {
-    padding: 20px 18px 16px; display: flex; align-items: center; gap: 11px;
-    border-bottom: 1px solid rgba(255,255,255,.07);
-  }
-  #sidebar .logo-icon {
-    width: 32px; height: 32px; background: var(--accent); border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 900; font-size: 15px; flex-shrink: 0; letter-spacing: -.02em;
-  }
-  #sidebar .logo-text strong { font-size: 15px; font-weight: 800; letter-spacing: -.02em; display: block; }
-  #sidebar .logo-text small { color: rgba(255,255,255,.35); font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: .06em; }
-
-  #sidebar nav { flex: 1; padding: 10px 10px; overflow-y: auto; }
-  #sidebar .nav-section-label {
-    font-size: 9px; font-weight: 700; color: rgba(255,255,255,.25);
-    text-transform: uppercase; letter-spacing: .1em;
-    padding: 14px 8px 4px;
-  }
-  #sidebar nav a {
-    display: flex; align-items: center; gap: 10px;
-    padding: 9px 10px; border-radius: var(--radius-sm);
-    color: rgba(255,255,255,.5); font-size: 13px; font-weight: 500;
-    margin-bottom: 1px; transition: background .12s, color .12s;
-  }
-  #sidebar nav a:hover { background: rgba(255,255,255,.07); color: rgba(255,255,255,.9); }
-  #sidebar nav a.active { background: var(--accent); color: #fff; }
-  #sidebar nav a svg { flex-shrink: 0; }
-  #sidebar nav a.active svg { opacity: 1; }
-  #sidebar nav a svg { opacity: .6; }
-  #sidebar nav a:hover svg, #sidebar nav a.active svg { opacity: 1; }
-
-  #sidebar .sidebar-foot {
-    padding: 12px 18px; border-top: 1px solid rgba(255,255,255,.07);
-    font-size: 11px; color: rgba(255,255,255,.2);
-  }
-
-  #main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+  #main { flex: 1; display: flex; flex-direction: column; min-width: 0; min-height: 0; overflow: hidden; }
   #topbar {
-    height: 52px; background: var(--white); border-bottom: 1px solid var(--gray-200);
+    height: 44px; background: var(--elevated); border-bottom: 1px solid var(--hairline);
     display: flex; align-items: center; justify-content: space-between;
     padding: 0 24px; flex-shrink: 0;
-    box-shadow: 0 1px 0 var(--gray-200);
   }
-  #topbar h1 { font-size: 15px; font-weight: 700; color: var(--gray-900); letter-spacing: -.01em; }
-  #content { flex: 1; overflow-y: auto; padding: 24px; }
+  #topbar h1 { font-size: 14px; font-weight: 500; color: var(--ink); letter-spacing: -.01em; }
+  #content { flex: 1; overflow-y: auto; padding: 20px 24px 78px; }
+
+  /* ── Bottom tab bar ── */
+  #bottom-tabbar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    height: 58px; background: var(--elevated); border-top: 1px solid var(--hairline);
+    display: flex; align-items: stretch; z-index: 100;
+  }
+  .btab {
+    flex: 1; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 3px; cursor: pointer; background: none;
+    border: none; padding: 0; transition: opacity .1s; -webkit-tap-highlight-color: transparent;
+    position: relative;
+  }
+  .btab svg { width: 20px; height: 20px; stroke: var(--mute); stroke-width: 1.75; fill: none; transition: stroke .12s; }
+  .btab .btab-label { font-size: 10px; font-weight: 500; color: var(--mute); letter-spacing: .01em; font-family: 'Geist', system-ui, sans-serif; transition: color .12s; }
+  .btab.active svg { stroke: var(--ink); }
+  .btab.active .btab-label { color: var(--ink); }
+  .btab:active { opacity: .6; }
+  .live-indicator { position: absolute; top: 7px; right: calc(50% - 14px); width: 6px; height: 6px; background: #1a7a3c; border-radius: 50%; display: none; }
+  .live-indicator.show { display: block; animation: pulse 1.5s infinite; }
 
   /* ── Pages ── */
   .page { display: none; }
   .page.active { display: block; }
 
   /* ── Cards ── */
-  .card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-sm); border: 1px solid var(--gray-200); }
-  .card-header { padding: 16px 18px 0; }
-  .card-header h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--gray-500); }
-  .card-header p { font-size: 12px; color: var(--gray-400); margin-top: 2px; }
-  .card-body { padding: 14px 18px; }
+  .card { background: var(--elevated); border-radius: var(--radius); border: 1px solid var(--hairline); }
+  .card-header { padding: 16px 20px 0; }
+  .card-header h3 { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; color: var(--mute); font-family: 'Geist Mono', monospace; }
+  .card-header p { font-size: 12px; color: var(--faint); margin-top: 2px; }
+  .card-body { padding: 14px 20px; }
   .card-body.pt-0 { padding-top: 8px; }
 
   /* ── Stat tiles ── */
-  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
   .stat-tile {
-    background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-sm);
-    border: 1px solid var(--gray-200); padding: 16px 18px;
-    display: flex; align-items: center; gap: 14px;
+    background: var(--elevated); border-radius: var(--radius); border: 1px solid var(--hairline);
+    padding: 16px 20px; display: flex; align-items: center; gap: 14px;
   }
-  .stat-tile-icon { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .stat-tile h2 { font-size: 28px; font-weight: 900; line-height: 1; letter-spacing: -.03em; }
-  .stat-tile small { font-size: 11px; color: var(--gray-500); margin-top: 3px; display: block; font-weight: 500; }
+  .stat-tile-icon { width: 34px; height: 34px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .stat-tile h2 { font-size: 24px; font-weight: 600; line-height: 1; letter-spacing: -.04em; color: var(--ink); }
+  .stat-tile small { font-size: 11px; color: var(--mute); margin-top: 3px; display: block; font-weight: 400; }
 
   /* ── Buttons ── */
-  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; transition: .12s; }
-  .btn-primary { background: var(--accent); color: #fff; }
-  .btn-primary:hover { background: var(--accent-h); }
-  .btn-orange { background: var(--accent); color: #fff; }
-  .btn-orange:hover { background: var(--accent-h); }
-  .btn-outline { border: 1px solid var(--gray-200); color: var(--gray-700); background: var(--white); box-shadow: var(--shadow-sm); }
-  .btn-outline:hover { background: var(--gray-50); border-color: var(--gray-400); }
-  .btn-ghost { color: var(--gray-500); }
-  .btn-ghost:hover { background: var(--gray-100); color: var(--gray-900); }
-  .btn-sm { padding: 5px 10px; font-size: 12px; }
+  /* Primary: black pill — marketing CTA style */
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 0 14px; height: 36px; border-radius: 100px; font-size: 14px; font-weight: 500; transition: opacity .1s; }
+  .btn:active { opacity: .75; }
+  .btn-primary { background: var(--ink); color: #fff; }
+  .btn-primary:hover { background: #333; }
+  .btn-primary { background: var(--ink); color: #fff; }
+  .btn-primary:hover { background: #333; }
+  /* Outline: 6px square — app control style */
+  .btn-outline { border: 1px solid var(--hairline); color: var(--ink); background: var(--elevated); border-radius: var(--radius-sm); }
+  .btn-outline:hover { background: var(--canvas); }
+  .btn-ghost { color: var(--link); background: none; border-radius: var(--radius-sm); }
+  .btn-ghost:hover { text-decoration: underline; }
+  .btn-sm { padding: 0 8px; height: 28px; font-size: 12px; }
   .btn-danger { background: var(--red); color: #fff; }
-  .btn[disabled] { opacity: .4; pointer-events: none; }
+  .btn[disabled] { opacity: .3; pointer-events: none; }
 
   /* ── Badges ── */
-  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 700; }
-  .badge-blue { background: var(--accent-100); color: var(--accent); }
-  .badge-green { background: var(--green-100); color: var(--green); }
-  .badge-red { background: var(--red-100); color: var(--red); }
-  .badge-yellow { background: var(--yellow-100); color: var(--yellow-700); }
-  .badge-gray { background: var(--gray-100); color: var(--gray-700); }
-  .badge-orange { background: var(--accent-lt); color: var(--accent); }
+  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 100px; font-size: 11px; font-weight: 500; border: 1px solid var(--hairline); }
+  .badge-gray { background: var(--canvas); color: var(--body); border-color: var(--hairline); }
+  .badge-green { background: var(--green-100); color: var(--green); border-color: #a8e6c0; }
+  .badge-red { background: var(--red-100); color: var(--red); border-color: #ffb3b3; }
+  .badge-yellow { background: var(--yellow-100); color: var(--yellow-700); border-color: #ffd5a0; }
 
   /* ── Form elements ── */
   .form-group { margin-bottom: 14px; }
-  .form-group label { display: block; font-size: 11px; font-weight: 700; color: var(--gray-500); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 5px; }
-  .form-control { width: 100%; padding: 8px 11px; border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm); font-size: 13px; outline: none; transition: .12s; background: var(--white); color: var(--gray-900); }
-  .form-control:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(29,78,216,.1); }
+  .form-group label { display: block; font-size: 11px; font-weight: 500; color: var(--mute); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 5px; font-family: 'Geist Mono', monospace; }
+  .form-control { width: 100%; padding: 7px 12px; border: 1px solid var(--hairline); border-radius: var(--radius-sm); font-size: 13px; outline: none; transition: border-color .1s, box-shadow .1s; background: var(--elevated); color: var(--ink); }
+  .form-control:focus { border-color: var(--ink); box-shadow: 0 0 0 3px rgba(23,23,23,.08); }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
 
   /* ── Tabs ── */
-  .tabs { display: flex; border-bottom: 2px solid var(--gray-200); margin-bottom: 20px; }
-  .tab-btn { padding: 9px 18px; font-size: 13px; font-weight: 600; color: var(--gray-500); border-bottom: 2px solid transparent; margin-bottom: -2px; transition: .12s; background: none; }
-  .tab-btn:hover { color: var(--gray-900); }
-  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tabs { display: flex; border-bottom: 1px solid var(--hairline); margin-bottom: 20px; }
+  .tab-btn { padding: 8px 16px; font-size: 13px; font-weight: 400; color: var(--mute); border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color .1s; background: none; }
+  .tab-btn:hover { color: var(--ink); }
+  .tab-btn.active { color: var(--ink); border-bottom-color: var(--ink); font-weight: 500; }
   .tab-panel { display: none; }
   .tab-panel.active { display: block; }
 
   /* ── Player list ── */
-  .player-list { display: flex; flex-direction: column; gap: 8px; }
+  .player-list { display: flex; flex-direction: column; gap: 6px; }
   .player-row {
-    background: var(--white); border-radius: var(--radius); border: 1px solid var(--gray-200);
+    background: var(--elevated); border-radius: var(--radius); border: 1px solid var(--hairline);
     padding: 12px 16px; display: flex; align-items: center; gap: 13px;
-    box-shadow: var(--shadow-sm); transition: box-shadow .15s, border-color .15s; cursor: pointer;
+    transition: background .1s; cursor: pointer;
   }
-  .player-row:hover { box-shadow: var(--shadow); border-color: #bfdbfe; }
+  .player-row:hover { background: var(--canvas); }
   .avatar {
-    width: 38px; height: 38px; border-radius: 50%;
-    background: #dbeafe; color: var(--accent);
-    font-weight: 800; font-size: 15px;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--canvas); color: var(--ink); border: 1px solid var(--hairline);
+    font-weight: 500; font-size: 13px;
     display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
   .player-info { flex: 1; min-width: 0; }
-  .player-name { font-weight: 700; font-size: 14px; color: var(--gray-900); }
-  .player-meta { font-size: 12px; color: var(--gray-500); margin-top: 2px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .player-name { font-weight: 500; font-size: 14px; color: var(--ink); letter-spacing: -.01em; }
+  .player-meta { font-size: 12px; color: var(--mute); margin-top: 2px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
   .player-stats-mini { display: flex; gap: 18px; text-align: center; }
-  .stat-mini strong { display: block; font-size: 17px; font-weight: 800; }
-  .stat-mini span { font-size: 11px; color: var(--gray-400); }
+  .stat-mini strong { display: block; font-size: 17px; font-weight: 600; letter-spacing: -.03em; color: var(--ink); }
+  .stat-mini span { font-size: 11px; color: var(--faint); }
   .player-actions { display: flex; gap: 6px; align-items: center; }
 
   /* ── Charts ── */
-  .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+  .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
   .chart-wrap { position: relative; height: 210px; }
 
   /* ── Drill cards ── */
-  .drill-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
-  .drill-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow-sm); }
-  .drill-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 6px; color: var(--gray-900); }
-  .drill-card p { font-size: 12px; color: var(--gray-500); line-height: 1.55; margin-bottom: 10px; }
+  .drill-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; }
+  .drill-card { background: var(--elevated); border: 1px solid var(--hairline); border-radius: var(--radius); padding: 16px; }
+  .drill-card h4 { font-size: 14px; font-weight: 500; margin-bottom: 6px; color: var(--ink); letter-spacing: -.01em; }
+  .drill-card p { font-size: 13px; color: var(--body); line-height: 1.5; margin-bottom: 10px; }
   .drill-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
-  .drill-detail { font-size: 12px; color: var(--gray-500); margin-top: 8px; border-top: 1px solid var(--gray-100); padding-top: 8px; }
-  .drill-detail strong { color: var(--gray-700); }
+  .drill-detail { font-size: 12px; color: var(--mute); margin-top: 8px; border-top: 1px solid var(--hairline); padding-top: 8px; }
+  .drill-detail strong { color: var(--body); }
 
   /* ── Practice plan ── */
-  .plan-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius); overflow: hidden; margin-bottom: 12px; box-shadow: var(--shadow-sm); }
-  .plan-header { padding: 14px 18px; border-bottom: 1px solid var(--gray-200); display: flex; align-items: center; justify-content: space-between; }
-  .plan-header h3 { font-size: 14px; font-weight: 700; }
-  .plan-drill { padding: 11px 18px; border-bottom: 1px solid var(--gray-100); display: flex; gap: 12px; align-items: flex-start; }
+  .plan-card { background: var(--elevated); border: 1px solid var(--hairline); border-radius: var(--radius); overflow: hidden; margin-bottom: 10px; }
+  .plan-header { padding: 12px 16px; border-bottom: 1px solid var(--hairline); display: flex; align-items: center; justify-content: space-between; }
+  .plan-header h3 { font-size: 14px; font-weight: 500; color: var(--ink); letter-spacing: -.01em; }
+  .plan-drill { padding: 10px 16px; border-bottom: 1px solid var(--hairline); display: flex; gap: 12px; align-items: flex-start; }
   .plan-drill:last-child { border-bottom: none; }
-  .plan-num { width: 22px; height: 22px; background: var(--accent-100); color: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; flex-shrink: 0; margin-top: 1px; }
+  .plan-num { width: 18px; height: 18px; background: var(--canvas); color: var(--mute); border: 1px solid var(--hairline); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 500; flex-shrink: 0; margin-top: 2px; font-family: 'Geist Mono', monospace; }
   .plan-drill-info { flex: 1; }
-  .plan-drill-info strong { font-size: 13px; }
-  .plan-drill-info .why { font-size: 12px; color: var(--gray-500); margin-top: 3px; font-style: italic; }
-  .plan-drill-info .trigger { font-size: 11px; color: var(--accent); margin-top: 2px; }
+  .plan-drill-info strong { font-size: 13px; font-weight: 500; color: var(--ink); }
+  .plan-drill-info .why { font-size: 12px; color: var(--mute); margin-top: 3px; font-style: italic; }
+  .plan-drill-info .trigger { font-size: 11px; color: var(--link); margin-top: 2px; }
 
   /* ── Modal ── */
-  .modal-bg { position: fixed; inset: 0; background: rgba(15,23,42,.55); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: .2s; }
+  .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity .15s; }
   .modal-bg.open { opacity: 1; pointer-events: all; }
-  .modal { background: var(--white); border-radius: var(--radius); width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-md); transform: translateY(16px) scale(.98); transition: .2s; }
-  .modal-bg.open .modal { transform: translateY(0) scale(1); }
-  .modal-head { padding: 18px 22px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--gray-200); }
-  .modal-head h2 { font-size: 16px; font-weight: 800; letter-spacing: -.01em; }
-  .modal-body { padding: 18px 22px 22px; }
-  .close-btn { color: var(--gray-400); font-size: 22px; line-height: 1; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: .12s; }
-  .close-btn:hover { background: var(--gray-100); color: var(--gray-700); }
+  .modal { background: var(--elevated); border-radius: var(--radius); border: 1px solid var(--hairline); width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; box-shadow: 0 2px 2px rgba(0,0,0,.04), 0 8px 16px -4px rgba(0,0,0,.08); transform: translateY(8px); transition: transform .15s; }
+  .modal-bg.open .modal { transform: translateY(0); }
+  .modal-head { padding: 16px 20px 12px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--hairline); }
+  .modal-head h2 { font-size: 16px; font-weight: 600; letter-spacing: -.02em; color: var(--ink); }
+  .modal-body { padding: 16px 20px 20px; }
+  .close-btn { color: var(--faint); font-size: 18px; line-height: 1; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-sm); transition: background .1s; }
+  .close-btn:hover { background: var(--canvas); color: var(--ink); }
 
   /* ── Analysis ── */
-  .analysis-block { background: var(--accent-lt); border: 1px solid var(--accent-100); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 12px; }
+  .analysis-block { background: var(--canvas); border: 1px solid var(--hairline); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 12px; }
   .strength-list li, .weakness-list li { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 7px; font-size: 13px; }
-  .dot-green { width: 7px; height: 7px; background: var(--green); border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
-  .dot-red { width: 7px; height: 7px; background: var(--red); border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+  .dot-green { width: 5px; height: 5px; background: var(--green); border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
+  .dot-red { width: 5px; height: 5px; background: var(--red); border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
   .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .scouting-report { font-size: 13px; line-height: 1.7; color: var(--gray-700); background: var(--gray-50); border-radius: var(--radius-sm); padding: 14px; border: 1px solid var(--gray-200); margin-bottom: 12px; }
+  .scouting-report { font-size: 13px; line-height: 1.6; color: var(--body); background: var(--canvas); border-radius: var(--radius-sm); padding: 14px; border: 1px solid var(--hairline); margin-bottom: 12px; }
 
   /* ── Alert ── */
-  .alert { padding: 10px 14px; border-radius: var(--radius-sm); font-size: 13px; margin-bottom: 14px; display: flex; gap: 8px; align-items: center; }
-  .alert-blue { background: var(--accent-lt); color: var(--accent); border: 1px solid var(--accent-100); }
-  .alert-green { background: var(--green-100); color: var(--green); border: 1px solid #6ee7b7; }
-  .alert-red { background: var(--red-100); color: var(--red); border: 1px solid #fca5a5; }
+  .alert { padding: 10px 12px; border-radius: var(--radius-sm); font-size: 13px; margin-bottom: 12px; display: flex; gap: 8px; align-items: center; border: 1px solid var(--hairline); }
+  .alert-blue { background: #d3e5ff; color: #0761d1; border-color: #b3cfff; }
+  .alert-green { background: var(--green-100); color: var(--green); border-color: #a8e6c0; }
+  .alert-red { background: var(--red-100); color: var(--red); border-color: #ffb3b3; }
 
   /* ── API key bar ── */
-  #key-banner { background: var(--navy); color: #fff; padding: 8px 24px; display: flex; align-items: center; gap: 12px; font-size: 12px; flex-shrink: 0; border-bottom: 1px solid rgba(255,255,255,.06); }
-  #key-banner input { flex: 1; max-width: 300px; padding: 5px 10px; border-radius: var(--radius-sm); border: 1px solid rgba(255,255,255,.15); background: rgba(255,255,255,.07); color: #fff; font-size: 12px; outline: none; }
-  #key-banner input::placeholder { color: rgba(255,255,255,.3); }
-  #key-banner input:focus { border-color: rgba(255,255,255,.45); background: rgba(255,255,255,.1); }
+  #key-banner { background: var(--ink); color: rgba(255,255,255,.6); padding: 6px 24px; display: flex; align-items: center; gap: 12px; font-size: 12px; flex-shrink: 0; border-bottom: 1px solid rgba(255,255,255,.06); }
+  #key-banner input { flex: 1; max-width: 280px; padding: 4px 10px; border-radius: var(--radius-sm); border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.06); color: #fff; font-size: 12px; outline: none; }
+  #key-banner input::placeholder { color: rgba(255,255,255,.22); }
+  #key-banner input:focus { border-color: rgba(255,255,255,.3); }
 
   /* ── Misc ── */
   .page-title { margin-bottom: 20px; }
-  .page-title h1 { font-size: 22px; font-weight: 900; letter-spacing: -.03em; color: var(--gray-900); }
-  .page-title p { font-size: 12px; color: var(--gray-500); margin-top: 3px; }
+  .page-title h1 { font-size: 20px; font-weight: 600; letter-spacing: -.04em; color: var(--ink); }
+  .page-title p { font-size: 13px; color: var(--mute); margin-top: 3px; }
   .flex { display: flex; }
   .flex-between { display: flex; align-items: center; justify-content: space-between; }
   .flex-gap { display: flex; align-items: center; gap: 10px; }
   .mb-4 { margin-bottom: 16px; }
   .mt-4 { margin-top: 16px; }
   .text-sm { font-size: 12px; }
-  .text-gray { color: var(--gray-500); }
-  .empty-state { text-align: center; padding: 56px 20px; color: var(--gray-400); }
-  .empty-state svg { margin-bottom: 12px; opacity: .3; }
-  .empty-state p { font-size: 15px; font-weight: 700; color: var(--gray-500); }
-  .empty-state small { font-size: 12px; display: block; margin-top: 4px; color: var(--gray-400); }
+  .text-gray { color: var(--mute); }
+  .empty-state { text-align: center; padding: 56px 20px; color: var(--faint); }
+  .empty-state svg { margin-bottom: 12px; opacity: .2; }
+  .empty-state p { font-size: 15px; font-weight: 500; color: var(--mute); }
+  .empty-state small { font-size: 13px; display: block; margin-top: 4px; color: var(--faint); }
   .loading-spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.3); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .section-divider { font-size: 11px; font-weight: 700; color: var(--gray-400); text-transform: uppercase; letter-spacing: .07em; margin: 20px 0 10px; }
-  .tag { display: inline-block; background: var(--accent-lt); color: var(--accent); padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; margin: 2px; }
+  .section-divider { font-size: 10px; font-weight: 500; color: var(--faint); text-transform: uppercase; letter-spacing: .08em; margin: 20px 0 10px; font-family: 'Geist Mono', monospace; }
+  .tag { display: inline-block; background: var(--canvas); color: var(--body); padding: 2px 8px; border-radius: 100px; font-size: 11px; font-weight: 400; margin: 2px; border: 1px solid var(--hairline); }
   details summary { cursor: pointer; user-select: none; }
   details summary::-webkit-details-marker { display: none; }
 
@@ -258,108 +252,116 @@
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
 
   .live-score-block {
-    background: var(--navy); color: #fff;
+    background: var(--ink); color: #fff;
     border-radius: var(--radius); padding: 20px 16px 16px;
     margin-bottom: 12px; text-align: center;
-    box-shadow: var(--shadow-md);
   }
   .live-teams-row { display:flex; align-items:center; justify-content:center; gap:20px; margin-bottom:8px; }
   .live-team { text-align:center; min-width:90px; }
-  .live-score-num { font-size:64px; font-weight:900; line-height:1; font-variant-numeric:tabular-nums; letter-spacing:-.04em; }
-  .live-team-name { font-size:11px; opacity:.45; margin-top:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:130px; text-transform:uppercase; letter-spacing:.08em; font-weight:600; }
-  .live-colon { font-size:40px; font-weight:200; opacity:.2; padding:0 6px; margin-bottom:10px; }
-  .live-status-row { display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap; font-size:11px; opacity:.55; margin-top:4px; }
-  .live-serving-pill { padding:3px 10px; border-radius:20px; font-size:10px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; background:rgba(255,255,255,.12); }
-  .set-badges { display:flex; gap:5px; }
-  .set-badge { background:rgba(255,255,255,.1); border-radius:5px; padding:2px 8px; font-size:10px; font-weight:700; }
-  .set-badge.won { background:var(--accent); }
+  .live-score-num { font-size:64px; font-weight:600; line-height:1; font-variant-numeric:tabular-nums; letter-spacing:-.05em; }
+  .live-team-name { font-size:10px; opacity:.35; margin-top:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:130px; text-transform:uppercase; letter-spacing:.1em; font-weight:500; font-family:'Geist Mono',monospace; }
+  .live-colon { font-size:40px; font-weight:200; opacity:.15; padding:0 6px; margin-bottom:10px; }
+  .live-status-row { display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap; font-size:11px; opacity:.45; margin-top:4px; }
+  .live-serving-pill { padding:2px 8px; border-radius:100px; font-size:10px; font-weight:500; letter-spacing:.06em; text-transform:uppercase; background:rgba(255,255,255,.08); font-family:'Geist Mono',monospace; }
+  .set-badges { display:flex; gap:4px; }
+  .set-badge { background:rgba(255,255,255,.08); border-radius:4px; padding:2px 7px; font-size:10px; font-weight:500; }
+  .set-badge.won { background:rgba(255,255,255,.22); }
 
-  .live-point-btn { border:none; border-radius:var(--radius); padding:22px 16px; font-size:18px; font-weight:800; cursor:pointer; width:100%; -webkit-tap-highlight-color:transparent; user-select:none; transition:.1s; text-transform:uppercase; letter-spacing:.05em; box-shadow:var(--shadow); }
-  .live-point-btn:active { transform:scale(.98); box-shadow:none; }
-  .live-point-btn.us { background:#059669; color:#fff; }
-  .live-point-btn.them { background:#dc2626; color:#fff; }
+  .live-point-btn { border:none; border-radius:var(--radius); padding:22px 16px; font-size:16px; font-weight:600; cursor:pointer; width:100%; -webkit-tap-highlight-color:transparent; user-select:none; transition:opacity .1s; text-transform:uppercase; letter-spacing:.06em; font-family:'Geist Mono',monospace; }
+  .live-point-btn:active { opacity:.8; }
+  .live-point-btn.us { background:#1a7a3c; color:#fff; }
+  .live-point-btn.them { background:#c50000; color:#fff; }
   .live-controls { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
 
   /* Court diagram */
-  .court-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; padding:4px 0; }
+  .court-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:5px; padding:4px 0; }
   .court-half { display:contents; }
   .court-pos {
     position:relative; border-radius:8px;
-    background:rgba(255,255,255,.15); border:1.5px solid rgba(255,255,255,.2);
+    background:var(--elevated); border:1px solid var(--hairline);
     display:flex; flex-direction:column; align-items:center; justify-content:center;
-    cursor:pointer; transition:.12s; min-height:76px; padding:8px 4px;
+    cursor:pointer; transition:background .1s; min-height:76px; padding:8px 4px;
     -webkit-tap-highlight-color:transparent;
   }
-  .court-pos:hover { background:rgba(255,255,255,.22); }
-  .court-pos:active { background:rgba(255,255,255,.32); transform:scale(.97); }
-  .court-pos .jersey { font-size:10px; font-weight:700; color:rgba(255,255,255,.45); }
-  .court-pos .pname { font-size:13px; font-weight:800; color:#fff; text-align:center; line-height:1.2; margin-top:3px; word-break:break-word; }
-  .court-pos .pos-abbr { font-size:9px; font-weight:700; color:rgba(255,255,255,.75); margin-top:3px; background:rgba(0,0,0,.25); padding:2px 6px; border-radius:4px; }
-  .court-pos .pos-label { font-size:8px; color:rgba(255,255,255,.3); margin-top:2px; letter-spacing:.04em; }
-  .court-pos.libero-spot { background:rgba(29,78,216,.4); border-color:rgba(99,149,255,.6); }
-  .court-pos.serving { background:rgba(5,150,105,.35); border-color:rgba(5,150,105,.7); }
-  .court-pos.serving::after { content:'SRV'; font-size:7px; color:#6ee7b7; font-weight:800; letter-spacing:.1em; margin-top:2px; }
-  .court-container { background:#1a5c32; border-radius:var(--radius); padding:8px; display:flex; flex-direction:column; gap:0; box-shadow:var(--shadow-md); }
-  .court-net { background:rgba(255,255,255,.12); border-top:2px solid rgba(255,255,255,.28); border-bottom:2px solid rgba(255,255,255,.28); text-align:center; font-size:9px; font-weight:800; color:rgba(255,255,255,.4); letter-spacing:.16em; padding:4px 0; margin:0 -8px; }
+  .court-pos:hover { background:var(--gray-100); }
+  .court-pos:active { background:var(--gray-200); }
+  .court-pos .jersey { font-size:10px; font-weight:500; color:var(--faint); font-family:'Geist Mono',monospace; }
+  .court-pos .pname { font-size:13px; font-weight:500; color:var(--ink); text-align:center; line-height:1.2; margin-top:3px; word-break:break-word; }
+  .court-pos .pos-abbr { font-size:9px; font-weight:500; color:var(--mute); margin-top:3px; background:var(--gray-100); padding:2px 5px; border-radius:3px; font-family:'Geist Mono',monospace; }
+  .court-pos .pos-label { font-size:8px; color:var(--faint); margin-top:2px; letter-spacing:.04em; }
+  .court-pos.libero-spot { background:rgba(0,112,243,.06); border-color:rgba(0,112,243,.25); }
+  .court-pos.serving { background:var(--green-100); border-color:#a8e6c0; }
+  .court-pos.serving::after { content:'SRV'; font-size:7px; color:var(--green); font-weight:500; letter-spacing:.1em; margin-top:2px; font-family:'Geist Mono',monospace; }
+  .court-container { background:var(--canvas); border:1px solid var(--hairline); border-radius:var(--radius); padding:8px; display:flex; flex-direction:column; gap:0; }
+  .court-net { background:var(--hairline); border-top:2px solid var(--gray-400); border-bottom:2px solid var(--gray-400); text-align:center; font-size:8px; font-weight:500; color:var(--mute); letter-spacing:.2em; padding:4px 0; margin:0 -8px; font-family:'Geist Mono',monospace; }
 
-  .bench-strip { display:flex; gap:8px; flex-wrap:wrap; }
+  .bench-strip { display:flex; gap:6px; flex-wrap:wrap; }
   .bench-player {
-    background:var(--white); border:1.5px solid var(--gray-200); border-radius:var(--radius-sm);
-    padding:8px 12px; font-size:12px; font-weight:700; cursor:pointer;
-    display:flex; align-items:center; gap:7px; transition:.12s;
-    box-shadow:var(--shadow-sm);
+    background:var(--elevated); border:1px solid var(--hairline); border-radius:100px;
+    padding:5px 12px; font-size:12px; font-weight:500; cursor:pointer;
+    display:flex; align-items:center; gap:6px; transition:background .1s; color:var(--ink);
   }
-  .bench-player:hover { border-color:#93c5fd; background:var(--accent-lt); box-shadow:var(--shadow); }
-  .bench-player .bnum { font-size:11px; color:var(--gray-400); font-weight:600; }
+  .bench-player:hover { background: var(--canvas); }
+  .bench-player .bnum { font-size:11px; color:var(--mute); font-weight:400; font-family:'Geist Mono',monospace; }
 
   /* Stat action buttons */
-  .stat-action-grid { display:grid; gap:8px; }
+  .stat-action-grid { display:grid; gap:6px; }
   .stat-action-grid.cols-2 { grid-template-columns:1fr 1fr; }
   .stat-action-grid.cols-3 { grid-template-columns:1fr 1fr 1fr; }
   .stat-btn {
-    padding:15px 10px; border-radius:var(--radius-sm); font-size:14px; font-weight:800;
-    text-align:center; cursor:pointer; transition:.1s;
+    padding:14px 10px; border-radius:var(--radius-sm); font-size:13px; font-weight:500;
+    text-align:center; cursor:pointer; transition:opacity .1s;
     -webkit-tap-highlight-color:transparent; user-select:none;
-    border:1.5px solid transparent; box-shadow:var(--shadow-sm);
+    border:1px solid var(--hairline); background:var(--elevated); color:var(--ink);
   }
-  .stat-btn:active { transform:scale(.95); box-shadow:none; }
-  .stat-btn.green  { background:#ecfdf5; color:#065f46; border-color:#a7f3d0; }
-  .stat-btn.red    { background:#fef2f2; color:#991b1b; border-color:#fecaca; }
-  .stat-btn.blue   { background:var(--accent-lt); color:#1e3a8a; border-color:var(--accent-100); }
-  .stat-btn.orange { background:#eff6ff; color:#1e40af; border-color:#bfdbfe; }
-  .stat-btn.gray   { background:var(--gray-100); color:var(--gray-700); border-color:var(--gray-200); }
-  .stat-btn.yellow { background:#fefce8; color:#713f12; border-color:#fde68a; }
-  .stat-btn .stat-btn-label { font-size:10px; font-weight:600; opacity:.55; margin-top:3px; text-transform:uppercase; letter-spacing:.05em; }
+  .stat-btn:active { opacity:.65; }
+  .stat-btn.green  { background:#f0faf5; color:var(--green); border-color:#a8e6c0; }
+  .stat-btn.red    { background:#fff0f0; color:var(--red); border-color:#ffb3b3; }
+  .stat-btn.blue   { background:#e8f2ff; color:#0761d1; border-color:#b3cfff; }
+  .stat-btn.orange { background:#fff4e6; color:#ab570a; border-color:#ffd5a0; }
+  .stat-btn.gray   { background:var(--canvas); color:var(--body); border-color:var(--hairline); }
+  .stat-btn.yellow { background:var(--yellow-100); color:var(--yellow-700); border-color:#ffd5a0; }
+  .stat-btn .stat-btn-label { font-size:10px; font-weight:500; opacity:.45; margin-top:3px; text-transform:uppercase; letter-spacing:.06em; font-family:'Geist Mono',monospace; }
 
   /* Live stats table */
   .live-stats-table { width:100%; border-collapse:collapse; font-size:12px; }
-  .live-stats-table th { background:var(--gray-50); padding:6px 8px; text-align:left; font-weight:700; color:var(--gray-500); font-size:10px; border-bottom:2px solid var(--gray-200); white-space:nowrap; text-transform:uppercase; letter-spacing:.05em; }
-  .live-stats-table td { padding:7px 8px; border-bottom:1px solid var(--gray-100); }
+  .live-stats-table th { background:var(--canvas); padding:6px 8px; text-align:left; font-weight:500; color:var(--mute); font-size:10px; border-bottom:1px solid var(--hairline); white-space:nowrap; text-transform:uppercase; letter-spacing:.06em; font-family:'Geist Mono',monospace; }
+  .live-stats-table td { padding:7px 8px; border-bottom:1px solid var(--hairline); color:var(--body); }
   .live-stats-table tr:last-child td { border-bottom:none; }
-  .live-stats-table tr:hover td { background:var(--gray-50); }
+  .live-stats-table tr:hover td { background:var(--canvas); }
 
   /* Match setup */
-  .lineup-slot { background:var(--gray-50); border:2px dashed var(--gray-200); border-radius:var(--radius-sm); padding:11px; display:flex; align-items:center; gap:10px; cursor:pointer; transition:.12s; margin-bottom:8px; }
-  .lineup-slot:hover { border-color:var(--accent); background:var(--accent-lt); }
-  .lineup-slot.filled { border-style:solid; border-color:var(--gray-200); background:var(--white); box-shadow:var(--shadow-sm); }
-  .lineup-pos-label { font-size:10px; font-weight:700; color:var(--gray-400); text-transform:uppercase; letter-spacing:.05em; width:70px; flex-shrink:0; }
-  .lineup-player-name { font-size:13px; font-weight:700; }
-  .lineup-jersey { font-size:11px; color:var(--gray-400); }
+  .lineup-slot { background:var(--canvas); border:1px dashed var(--hairline); border-radius:var(--radius-sm); padding:10px; display:flex; align-items:center; gap:10px; cursor:pointer; transition:border-color .1s; margin-bottom:6px; }
+  .lineup-slot:hover { border-color:#a1a1a1; }
+  .lineup-slot.filled { border-style:solid; border-color:var(--hairline); background:var(--elevated); }
+  .lineup-pos-label { font-size:10px; font-weight:500; color:var(--faint); text-transform:uppercase; letter-spacing:.06em; width:70px; flex-shrink:0; font-family:'Geist Mono',monospace; }
+  .lineup-player-name { font-size:13px; font-weight:500; color:var(--ink); }
+  .lineup-jersey { font-size:11px; color:var(--faint); font-family:'Geist Mono',monospace; }
 
   /* Match history cards */
-  .match-card { background:var(--white); border:1px solid var(--gray-200); border-radius:var(--radius); margin-bottom:10px; overflow:hidden; box-shadow:var(--shadow-sm); transition:box-shadow .15s; }
-  .match-card:hover { box-shadow:var(--shadow); }
+  .match-card { background:var(--elevated); border:1px solid var(--hairline); border-radius:var(--radius); margin-bottom:8px; overflow:hidden; transition:background .1s; }
+  .match-card:hover { background:var(--canvas); }
   .match-card-header { padding:14px 18px; display:flex; align-items:center; justify-content:space-between; }
-  .match-result { font-size:22px; font-weight:900; letter-spacing:-.02em; }
+  .match-result { font-size:20px; font-weight:600; letter-spacing:-.03em; color:var(--ink); }
   .match-result.win { color:var(--green); }
   .match-result.loss { color:var(--red); }
 
   /* PWA offline indicator */
-  #offlineBanner { display:none; position:fixed; top:0; left:0; right:0; z-index:500; background:#dc2626; color:#fff; text-align:center; padding:6px; font-size:12px; font-weight:700; }
+  #offlineBanner { display:none; position:fixed; top:0; left:0; right:0; z-index:500; background:var(--red); color:#fff; text-align:center; padding:6px; font-size:12px; font-weight:500; }
   #offlineBanner.show { display:block; }
 </style>
 </head>
 <body>
+
+<!-- Auth gate: shown until Clerk confirms a signed-in user -->
+<div id="authGate" style="position:fixed;inset:0;z-index:1000;background:var(--canvas);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px">
+  <div style="width:48px;height:48px;background:var(--ink);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff">V</div>
+  <h2 style="font-size:18px;font-weight:600;color:var(--ink);margin:0">VolleyAI Coach</h2>
+  <p style="font-size:13px;color:var(--mute);margin:0">Sign in to access your team</p>
+  <div id="clerkAuthBox"></div>
+</div>
+
+<div id="appRoot" style="display:none">
 
 <div id="offlineBanner">⚠ You are offline — match stats are saved locally and will sync when connection returns</div>
 
@@ -369,66 +371,24 @@
   <span>Anthropic API Key (for AI features):</span>
   <input type="password" id="apiKeyInput" placeholder="sk-ant-..." />
   <button class="btn btn-primary btn-sm" onclick="saveKey()">Save Key</button>
-  <span id="keySaved" style="color:#86efac;display:none">✓ Saved</span>
+  <span id="keySaved" style="color:var(--mute);display:none">Saved</span>
   <span style="margin-left:auto;font-size:11px;opacity:.5">Key stored locally in your browser only</span>
 </div>
 
 <div id="app">
-  <!-- Sidebar -->
-  <aside id="sidebar">
-    <div class="logo">
-      <div class="logo-icon">V</div>
-      <div class="logo-text"><strong>VolleyAI</strong><br><small>Coach Platform</small></div>
-    </div>
-    <nav>
-      <div class="nav-section-label">Team</div>
-      <a href="#" class="active" data-page="dashboard" onclick="nav(this)">
-        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-        Dashboard
-      </a>
-      <a href="#" data-page="players" onclick="nav(this)">
-        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
-        Players
-      </a>
-      <a href="#" data-page="add-players" onclick="nav(this)">
-        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
-        Enter Stats
-      </a>
-      <div class="nav-section-label">Coaching</div>
-      <a href="#" data-page="drills" onclick="nav(this)">
-        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-        Drill Library
-      </a>
-      <a href="#" data-page="plans" onclick="nav(this)">
-        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
-        Practice Plans
-      </a>
-      <a href="#" data-page="reports" onclick="nav(this)">
-        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-        Reports
-      </a>
-      <div class="nav-section-label">Match</div>
-      <a href="#" data-page="match" onclick="nav(this)">
-        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        Live Match
-        <span id="liveDot" style="display:none;width:7px;height:7px;background:#22c55e;border-radius:50%;margin-left:auto;animation:pulse 1.5s infinite"></span>
-      </a>
-      <a href="#" data-page="match-history" onclick="nav(this)">
-        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2a10 10 0 110 20A10 10 0 0112 2zm0 6v4l3 3"/></svg>
-        Match History
-      </a>
-    </nav>
-    <div class="sidebar-foot">
-      <span id="offlineBadge" style="display:none;color:#fca5a5;font-size:10px">⚠ Offline — data saved locally</span>
-      <span id="onlineBadge" style="color:rgba(255,255,255,.3)">VolleyAI Coach v1.0</span>
-    </div>
-  </aside>
-
   <div id="main">
     <div id="topbar">
-      <h1 id="topbarTitle">Dashboard</h1>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:24px;height:24px;background:var(--ink);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0">V</div>
+        <h1 id="topbarTitle">Dashboard</h1>
+      </div>
       <div class="flex-gap">
-        <span id="teamName" style="font-size:13px;color:var(--gray-500)"></span>
+        <button onclick="openTeamModal()" style="display:flex;align-items:center;gap:5px;background:none;border:1px solid var(--hairline);border-radius:var(--radius-sm);padding:4px 10px;cursor:pointer;font-size:12px;color:var(--body);font-family:inherit">
+          <span id="teamName">My Team</span>
+          <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <span id="offlineBadge" style="display:none;font-size:11px;color:var(--red)">⚠ Offline</span>
+        <div id="userButton" style="display:flex;align-items:center"></div>
       </div>
     </div>
     <div id="content">
@@ -450,13 +410,13 @@
               <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
               Add Player
             </button>
-            <button class="btn btn-orange" onclick="nav(document.querySelector('[data-page=add-players]'))">
+            <button class="btn btn-primary" onclick="nav(document.querySelector('[data-page=add-players]'))">
               <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
               Enter Stats
             </button>
           </div>
         </div>
-        <input class="form-control mb-4" id="playerSearch" style="max-width:300px" placeholder="🔍  Search players..." oninput="renderPlayers()">
+        <input class="form-control mb-4" id="playerSearch" style="max-width:300px" placeholder="Search players..." oninput="renderPlayers()">
         <div id="playerList" class="player-list"></div>
       </div>
 
@@ -486,7 +446,7 @@
               <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
               Add Player
             </button>
-            <button class="btn btn-orange" onclick="saveManualPlayers()">Save Players</button>
+            <button class="btn btn-primary" onclick="saveManualPlayers()">Save Players</button>
           </div>
         </div>
 
@@ -494,7 +454,7 @@
         <div class="tab-panel" id="tab-csv">
           <div id="dropzone" style="border:2px dashed var(--gray-200);border-radius:10px;padding:40px;text-align:center;cursor:pointer;transition:.15s" onclick="document.getElementById('fileInput').click()" ondragover="dropOver(event)" ondrop="dropFile(event)">
             <svg width="32" height="32" fill="none" stroke="var(--gray-400)" stroke-width="1.5" viewBox="0 0 24 24" style="margin:0 auto 10px"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-            <p style="font-weight:600;color:var(--gray-600)">Drop CSV or Excel file here</p>
+            <p style="font-weight:600;color:var(--body)">Drop CSV or Excel file here</p>
             <p style="font-size:12px;color:var(--gray-400);margin-top:4px">or click to browse (.csv, .xlsx)</p>
             <input type="file" id="fileInput" accept=".csv,.xlsx" style="display:none" onchange="handleFileInput(this)">
           </div>
@@ -509,11 +469,11 @@
         <div class="tab-panel" id="tab-photo">
           <div class="card">
             <div class="card-body">
-              <p style="font-size:13px;color:var(--gray-600);margin-bottom:16px">Upload a photo or screenshot of any stat sheet. AI will read it and extract all player statistics automatically.</p>
+              <p style="font-size:13px;color:var(--body);margin-bottom:16px">Upload a photo or screenshot of any stat sheet. AI will read it and extract all player statistics automatically.</p>
 
               <div id="photoDropzone" style="border:2px dashed var(--gray-200);border-radius:10px;padding:40px;text-align:center;cursor:pointer;transition:.15s;position:relative"
                 onclick="document.getElementById('photoInput').click()"
-                ondragover="event.preventDefault();this.style.borderColor='var(--blue-500)'"
+                ondragover="event.preventDefault();this.style.borderColor='var(--ink)'"
                 ondragleave="this.style.borderColor='var(--gray-200)'"
                 ondrop="handlePhotoDrop(event)">
                 <input type="file" id="photoInput" accept="image/*" style="display:none" onchange="handlePhotoSelect(this)">
@@ -522,14 +482,14 @@
                     <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
                     <polyline points="21 15 16 10 5 21"/>
                   </svg>
-                  <p style="font-weight:600;color:var(--gray-600)">Drop a stat sheet photo here</p>
+                  <p style="font-weight:600;color:var(--body)">Drop a stat sheet photo here</p>
                   <p style="font-size:12px;color:var(--gray-400);margin-top:4px">JPG, PNG, or screenshot — or click to browse</p>
                 </div>
               </div>
 
               <div id="photoPreviewWrap" style="display:none;margin-top:16px">
                 <img id="photoPreviewImg" style="max-width:100%;max-height:300px;border-radius:8px;border:1px solid var(--gray-200);display:block;margin-bottom:14px">
-                <button class="btn btn-orange" id="scanBtn" onclick="scanStatSheet()">
+                <button class="btn btn-primary" id="scanBtn" onclick="scanStatSheet()">
                   <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
                   Scan with AI
                 </button>
@@ -545,19 +505,24 @@
 
       <!-- ══════════════════════════════════════════ DRILLS ═════ -->
       <div id="page-drills" class="page">
+        <div class="tabs mb-4" style="margin-bottom:16px">
+          <button class="tab-btn active" onclick="navTab('drills','btab-coaching')">Drills</button>
+          <button class="tab-btn" onclick="navTab('plans','btab-coaching')">Plans</button>
+          <button class="tab-btn" onclick="navTab('reports','btab-coaching')">Reports</button>
+        </div>
         <div class="flex-between mb-4">
           <div class="page-title" style="margin-bottom:0">
             <h1>Drill Library</h1>
             <p id="drillCount">0 drills</p>
           </div>
-          <button class="btn btn-orange" onclick="openModal('drillModal')">
+          <button class="btn btn-primary" onclick="openModal('drillModal')">
             <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             Create Drill
           </button>
         </div>
 
         <div class="flex-gap mb-4">
-          <input class="form-control" id="drillSearch" style="max-width:280px" placeholder="🔍  Search drills..." oninput="renderDrills()">
+          <input class="form-control" id="drillSearch" style="max-width:280px" placeholder="Search drills..." oninput="renderDrills()">
           <select class="form-control" id="drillCatFilter" style="width:180px" onchange="renderDrills()">
             <option value="">All Categories</option>
             <option>Hitting</option><option>Blocking</option><option>Serving</option>
@@ -578,24 +543,29 @@
 
       <!-- ══════════════════════════════════════════ PLANS ══════ -->
       <div id="page-plans" class="page">
+        <div class="tabs mb-4" style="margin-bottom:16px">
+          <button class="tab-btn" onclick="navTab('drills','btab-coaching')">Drills</button>
+          <button class="tab-btn active" onclick="navTab('plans','btab-coaching')">Plans</button>
+          <button class="tab-btn" onclick="navTab('reports','btab-coaching')">Reports</button>
+        </div>
         <div class="flex-between mb-4">
           <div class="page-title" style="margin-bottom:0">
             <h1>Practice Plans</h1>
             <p id="planCount">0 plans</p>
           </div>
         </div>
-        <div class="card mb-4" style="border-color:var(--blue-100);background:var(--blue-50)">
+        <div class="card mb-4">
           <div class="card-body">
             <div class="flex-gap mb-3">
-              <svg width="18" height="18" fill="none" stroke="var(--blue-600)" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2a10 10 0 110 20A10 10 0 0112 2zm0 6v4l3 3"/></svg>
+              <svg width="18" height="18" fill="none" stroke="var(--ink)" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2a10 10 0 110 20A10 10 0 0112 2zm0 6v4l3 3"/></svg>
               <strong style="font-size:14px">Generate AI Practice Plan</strong>
             </div>
-            <p style="font-size:13px;color:var(--gray-600);margin-bottom:12px">Select a player with stats to generate a personalized drill-based practice plan.</p>
+            <p style="font-size:13px;color:var(--body);margin-bottom:12px">Select a player with stats to generate a personalized drill-based practice plan.</p>
             <div class="flex-gap">
               <select class="form-control" id="planPlayerSelect" style="max-width:260px">
                 <option value="">Select a player…</option>
               </select>
-              <button class="btn btn-orange" id="genPlanBtn" onclick="generatePlan()">
+              <button class="btn btn-primary" id="genPlanBtn" onclick="generatePlan()">
                 <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
                 Generate Plan
               </button>
@@ -608,18 +578,23 @@
 
       <!-- ══════════════════════════════════════════ REPORTS ════ -->
       <div id="page-reports" class="page">
+        <div class="tabs mb-4" style="margin-bottom:16px">
+          <button class="tab-btn" onclick="navTab('drills','btab-coaching')">Drills</button>
+          <button class="tab-btn" onclick="navTab('plans','btab-coaching')">Plans</button>
+          <button class="tab-btn active" onclick="navTab('reports','btab-coaching')">Reports</button>
+        </div>
         <div class="page-title">
           <h1>Team Reports</h1>
           <p>AI-generated team-wide analysis</p>
         </div>
-        <div class="card mb-4" style="border-color:var(--blue-100);background:var(--blue-50)">
+        <div class="card mb-4">
           <div class="card-body">
             <div class="flex-gap mb-3">
-              <svg width="18" height="18" fill="none" stroke="var(--blue-600)" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+              <svg width="18" height="18" fill="none" stroke="var(--ink)" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
               <strong style="font-size:14px">Generate Team Report</strong>
             </div>
-            <p style="font-size:13px;color:var(--gray-600);margin-bottom:12px">Analyze the entire roster and identify team-wide patterns and practice priorities.</p>
-            <button class="btn btn-orange" onclick="generateTeamReport()">
+            <p style="font-size:13px;color:var(--body);margin-bottom:12px">Analyze the entire roster and identify team-wide patterns and practice priorities.</p>
+            <button class="btn btn-primary" onclick="generateTeamReport()">
               <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
               Generate Team Report
             </button>
@@ -639,6 +614,32 @@
       </div>
 
     </div><!-- /content -->
+
+    <!-- ══════ BOTTOM TAB BAR ══════ -->
+    <nav id="bottom-tabbar" role="tablist">
+      <button class="btab active" id="btab-dashboard" role="tab" aria-label="Dashboard" onclick="navTab('dashboard','btab-dashboard')">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <span class="btab-label">Dashboard</span>
+      </button>
+      <button class="btab" id="btab-live" role="tab" aria-label="Live match" onclick="navTab('match','btab-live')">
+        <span class="live-indicator" id="liveDot"></span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <span class="btab-label">Live</span>
+      </button>
+      <button class="btab" id="btab-players" role="tab" aria-label="Players" onclick="navTab('players','btab-players')">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        <span class="btab-label">Players</span>
+      </button>
+      <button class="btab" id="btab-coaching" role="tab" aria-label="Coaching" onclick="navTab('drills','btab-coaching')">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+        <span class="btab-label">Coaching</span>
+      </button>
+      <button class="btab" id="btab-history" role="tab" aria-label="Match history" onclick="navTab('match-history','btab-history')">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        <span class="btab-label">History</span>
+      </button>
+    </nav>
+
   </div><!-- /main -->
 </div><!-- /app -->
 
@@ -664,6 +665,55 @@
   <div class="modal" style="max-width:400px">
     <div class="modal-head"><h2 id="endSetTitle">End Set</h2><button class="close-btn" onclick="closeModal('endSetModal')">✕</button></div>
     <div class="modal-body" id="endSetBody"></div>
+  </div>
+</div>
+
+<!-- ══════ FIRST LAUNCH MODAL ══════ -->
+<div class="modal-bg" id="setupModal" style="z-index:300">
+  <div class="modal" style="max-width:380px">
+    <div class="modal-body" style="padding:32px 28px">
+      <div style="width:36px;height:36px;background:var(--ink);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;margin-bottom:20px">V</div>
+      <h2 style="margin-bottom:6px;font-size:20px">Welcome to VolleyAI</h2>
+      <p style="font-size:13px;color:var(--mute);margin-bottom:24px">What's your team called?</p>
+      <input class="form-control" id="setupTeamName" placeholder="e.g. Riverside High Varsity" style="margin-bottom:16px" onkeydown="if(event.key==='Enter')finishSetup()">
+      <button class="btn btn-primary" style="width:100%" onclick="finishSetup()">Get Started</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ TEAM SWITCHER MODAL ══════ -->
+<div class="modal-bg" id="teamModal" onclick="if(event.target===this)closeModal('teamModal')">
+  <div class="modal" style="max-width:420px">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--hairline)">
+      <h3 style="font-size:15px;font-weight:600;color:var(--ink);margin:0">Teams</h3>
+      <button onclick="closeModal('teamModal')" style="background:none;border:none;cursor:pointer;color:var(--mute);font-size:16px;line-height:1;padding:4px">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="teamList" style="margin-bottom:16px"></div>
+
+      <div style="border-top:1px solid var(--hairline);padding-top:14px;margin-bottom:16px">
+        <p class="form-label" style="margin-bottom:6px">Add another team</p>
+        <div style="display:flex;gap:8px">
+          <input class="form-control" id="newTeamName" placeholder="Team name…" style="flex:1" onkeydown="if(event.key==='Enter')addTeam()">
+          <button class="btn btn-primary" onclick="addTeam()">Add</button>
+        </div>
+      </div>
+
+      <div style="border-top:1px solid var(--hairline);padding-top:14px">
+        <p style="font-size:12px;color:var(--mute);margin-bottom:10px">Data is saved in your browser only. Export a backup to protect against data loss.</p>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-outline btn-sm" onclick="exportTeamData()" style="flex:1">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export Backup
+          </button>
+          <label class="btn btn-outline btn-sm" style="flex:1;cursor:pointer;justify-content:center">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Import Backup
+            <input type="file" accept=".json" style="display:none" onchange="importTeamData(this.files[0])">
+          </label>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -698,32 +748,32 @@
         <label>Position(s) <span style="color:var(--gray-400);font-size:11px">select all that apply</span></label>
         <div id="newPlayerPositions" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:4px">
           <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid var(--gray-200);border-radius:8px;cursor:pointer;font-size:13px;font-weight:500">
-            <input type="checkbox" name="newPlayerPos" value="Outside Hitter" style="width:15px;height:15px;accent-color:var(--blue-700)"> Outside Hitter
+            <input type="checkbox" name="newPlayerPos" value="Outside Hitter" style="width:15px;height:15px;accent-color:var(--ink)"> Outside Hitter
           </label>
           <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid var(--gray-200);border-radius:8px;cursor:pointer;font-size:13px;font-weight:500">
-            <input type="checkbox" name="newPlayerPos" value="Middle Blocker" style="width:15px;height:15px;accent-color:var(--blue-700)"> Middle Blocker
+            <input type="checkbox" name="newPlayerPos" value="Middle Blocker" style="width:15px;height:15px;accent-color:var(--ink)"> Middle Blocker
           </label>
           <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid var(--gray-200);border-radius:8px;cursor:pointer;font-size:13px;font-weight:500">
-            <input type="checkbox" name="newPlayerPos" value="Opposite" style="width:15px;height:15px;accent-color:var(--blue-700)"> Opposite
+            <input type="checkbox" name="newPlayerPos" value="Opposite" style="width:15px;height:15px;accent-color:var(--ink)"> Opposite
           </label>
           <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid var(--gray-200);border-radius:8px;cursor:pointer;font-size:13px;font-weight:500">
-            <input type="checkbox" name="newPlayerPos" value="Setter" style="width:15px;height:15px;accent-color:var(--blue-700)"> Setter
+            <input type="checkbox" name="newPlayerPos" value="Setter" style="width:15px;height:15px;accent-color:var(--ink)"> Setter
           </label>
           <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid var(--gray-200);border-radius:8px;cursor:pointer;font-size:13px;font-weight:500">
-            <input type="checkbox" name="newPlayerPos" value="Libero" style="width:15px;height:15px;accent-color:var(--blue-700)"> Libero
+            <input type="checkbox" name="newPlayerPos" value="Libero" style="width:15px;height:15px;accent-color:var(--ink)"> Libero
           </label>
           <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid var(--gray-200);border-radius:8px;cursor:pointer;font-size:13px;font-weight:500">
-            <input type="checkbox" name="newPlayerPos" value="Defensive Specialist" style="width:15px;height:15px;accent-color:var(--blue-700)"> Defensive Specialist
+            <input type="checkbox" name="newPlayerPos" value="Defensive Specialist" style="width:15px;height:15px;accent-color:var(--ink)"> Defensive Specialist
           </label>
           <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid var(--gray-200);border-radius:8px;cursor:pointer;font-size:13px;font-weight:500">
-            <input type="checkbox" name="newPlayerPos" value="Serving Specialist" style="width:15px;height:15px;accent-color:var(--blue-700)"> Serving Specialist
+            <input type="checkbox" name="newPlayerPos" value="Serving Specialist" style="width:15px;height:15px;accent-color:var(--ink)"> Serving Specialist
           </label>
         </div>
       </div>
       <div id="addPlayerError" style="display:none;color:var(--red);font-size:13px;margin-top:10px"></div>
       <div class="flex-gap mt-4">
         <button class="btn btn-outline" style="flex:1" onclick="closeModal('addPlayerModal')">Cancel</button>
-        <button class="btn btn-orange" style="flex:2" onclick="saveNewPlayer()">Add Player</button>
+        <button class="btn btn-primary" style="flex:2" onclick="saveNewPlayer()">Add Player</button>
       </div>
     </div>
   </div>
@@ -787,7 +837,7 @@
         </select>
       </div>
       <div class="flex-gap">
-        <button class="btn btn-orange" onclick="saveDrill()">Create Drill</button>
+        <button class="btn btn-primary" onclick="saveDrill()">Create Drill</button>
         <button class="btn btn-outline" onclick="closeModal('drillModal')">Cancel</button>
       </div>
     </div>
@@ -798,22 +848,125 @@
 // ═══════════════════════════════════════════════════════════════
 //  STATE
 // ═══════════════════════════════════════════════════════════════
+//  MULTI-TEAM MANAGEMENT
+// ═══════════════════════════════════════════════════════════════
+function getTeams() {
+  return JSON.parse(localStorage.getItem('vai_teams') || '[]');
+}
+function saveTeams(teams) {
+  localStorage.setItem('vai_teams', JSON.stringify(teams));
+}
+function getActiveTeamId() {
+  let id = localStorage.getItem('vai_activeTeam');
+  if (!id) {
+    // Migrate legacy single-team data (or create first-run placeholder)
+    id = 'team_' + Math.random().toString(36).slice(2,10);
+    const name = localStorage.getItem('vai_team') || '';
+    saveTeams([{ id, name }]);
+    localStorage.setItem('vai_activeTeam', id);
+    // Copy legacy keys to namespaced keys
+    ['players','drills','plans','reports','matches'].forEach(k => {
+      const v = localStorage.getItem('vai_' + k);
+      if (v) localStorage.setItem('vai_' + id + '_' + k, v);
+    });
+  }
+  return id;
+}
+function teamKey(k) { return 'vai_' + getActiveTeamId() + '_' + k; }
+
+function createTeam(name) {
+  const id = 'team_' + Math.random().toString(36).slice(2,10);
+  const teams = getTeams();
+  teams.push({ id, name });
+  saveTeams(teams);
+  return id;
+}
+function deleteTeam(id) {
+  const teams = getTeams().filter(t => t.id !== id);
+  saveTeams(teams);
+  ['players','drills','plans','reports','matches'].forEach(k =>
+    localStorage.removeItem('vai_' + id + '_' + k));
+}
+function switchTeam(id) {
+  localStorage.setItem('vai_activeTeam', id);
+  loadTeamState();
+  updateTopbar();
+  navTab('dashboard', 'btab-dashboard');
+  renderDash();
+}
+function loadTeamState() {
+  const teams = getTeams();
+  const id = getActiveTeamId();
+  const team = teams.find(t => t.id === id) || teams[0];
+  state.teamName = team ? team.name : 'My Team';
+  state.players  = JSON.parse(localStorage.getItem(teamKey('players')) || '[]');
+  state.drills   = JSON.parse(localStorage.getItem(teamKey('drills'))  || '[]');
+  state.plans    = JSON.parse(localStorage.getItem(teamKey('plans'))   || '[]');
+  state.reports  = JSON.parse(localStorage.getItem(teamKey('reports')) || '[]');
+  state.matches  = JSON.parse(localStorage.getItem(teamKey('matches')) || '[]');
+}
+
+function exportTeamData() {
+  const id = getActiveTeamId();
+  const teams = getTeams();
+  const team = teams.find(t => t.id === id) || { name: 'Team' };
+  const data = {
+    exportedAt: new Date().toISOString(),
+    version: 1,
+    team: team.name,
+    players: state.players,
+    drills: state.drills,
+    plans: state.plans,
+    reports: state.reports,
+    matches: state.matches || [],
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = (team.name.replace(/\s+/g,'_') || 'team') + '_backup.json';
+  a.click();
+}
+function importTeamData(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!data.version || !Array.isArray(data.players)) throw new Error('Invalid file');
+      // Create new team with imported data
+      const id = createTeam(data.team || 'Imported Team');
+      localStorage.setItem('vai_' + id + '_players', JSON.stringify(data.players || []));
+      localStorage.setItem('vai_' + id + '_drills',  JSON.stringify(data.drills  || []));
+      localStorage.setItem('vai_' + id + '_plans',   JSON.stringify(data.plans   || []));
+      localStorage.setItem('vai_' + id + '_reports', JSON.stringify(data.reports || []));
+      localStorage.setItem('vai_' + id + '_matches', JSON.stringify(data.matches || []));
+      switchTeam(id);
+      closeModal('teamModal');
+      showToast('Team imported successfully');
+    } catch { showToast('Invalid backup file'); }
+  };
+  reader.readAsText(file);
+}
+
+// ═══════════════════════════════════════════════════════════════
 let state = {
   apiKey: localStorage.getItem('vai_key') || '',
-  teamName: localStorage.getItem('vai_team') || 'My Team',
-  players: JSON.parse(localStorage.getItem('vai_players') || '[]'),
-  drills:  JSON.parse(localStorage.getItem('vai_drills')  || '[]'),
-  plans:   JSON.parse(localStorage.getItem('vai_plans')   || '[]'),
-  reports: JSON.parse(localStorage.getItem('vai_reports') || '[]'),
+  teamName: 'My Team',
+  players: [],
+  drills:  [],
+  plans:   [],
+  reports: [],
+  matches: [],
   parsedImport: [],
 };
+// Load team data on startup
+getActiveTeamId(); // ensures migration runs
+loadTeamState();
 
 function save() {
-  localStorage.setItem('vai_team',    state.teamName);
-  localStorage.setItem('vai_players', JSON.stringify(state.players));
-  localStorage.setItem('vai_drills',  JSON.stringify(state.drills));
-  localStorage.setItem('vai_plans',   JSON.stringify(state.plans));
-  localStorage.setItem('vai_reports', JSON.stringify(state.reports));
+  localStorage.setItem(teamKey('players'), JSON.stringify(state.players));
+  localStorage.setItem(teamKey('drills'),  JSON.stringify(state.drills));
+  localStorage.setItem(teamKey('plans'),   JSON.stringify(state.plans));
+  localStorage.setItem(teamKey('reports'), JSON.stringify(state.reports));
 }
 
 function uid() { return Math.random().toString(36).slice(2,10); }
@@ -892,13 +1045,15 @@ function allDrills() { return [...BUILTIN_DRILLS, ...state.drills]; }
 window.onload = function() {
   document.getElementById('apiKeyInput').value = state.apiKey;
   document.getElementById('teamNameInput').value = state.teamName;
-  document.getElementById('teamName').textContent = state.teamName;
+  updateTopbar();
   addManualRow();
   renderDash();
   renderPlayers();
   renderDrills();
   renderPlans();
   updatePlanSelect();
+  // Show name prompt on first launch
+  if (!state.teamName) openModal('setupModal');
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -920,17 +1075,36 @@ const PAGE_TITLES = {
   dashboard:'Dashboard', players:'Players', 'add-players':'Enter Stats',
   drills:'Drill Library', plans:'Practice Plans', reports:'Reports',
 };
-function nav(el) {
-  document.querySelectorAll('#sidebar nav a').forEach(a => a.classList.remove('active'));
-  el.classList.add('active');
-  const page = el.dataset.page;
+const TAB_MAP = {
+  'dashboard':     'btab-dashboard',
+  'players':       'btab-players',
+  'add-players':   'btab-players',
+  'match':         'btab-live',
+  'drills':        'btab-coaching',
+  'plans':         'btab-coaching',
+  'reports':       'btab-coaching',
+  'match-history': 'btab-history',
+};
+
+function navTab(page, tabId) {
+  document.querySelectorAll('.btab').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+  const tab = document.getElementById(tabId);
+  if (tab) { tab.classList.add('active'); tab.setAttribute('aria-selected','true'); }
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-'+page).classList.add('active');
   document.getElementById('topbarTitle').textContent = PAGE_TITLES[page] || page;
   if (page === 'dashboard') renderDash();
+  if (page === 'match') renderMatchPage();
   if (page === 'players') renderPlayers();
   if (page === 'drills') renderDrills();
   if (page === 'plans') { renderPlans(); updatePlanSelect(); }
+  if (page === 'reports') { /* rendered on demand */ }
+}
+
+function nav(el) {
+  const page = el.dataset.page;
+  const tabId = TAB_MAP[page];
+  navTab(page, tabId || '');
   return false;
 }
 
@@ -967,12 +1141,95 @@ document.addEventListener('click', e => {
 });
 
 // ═══════════════════════════════════════════════════════════════
+//  TEAM MODAL
+// ═══════════════════════════════════════════════════════════════
+function updateTopbar() {
+  const name = state.teamName || 'Select team';
+  document.getElementById('teamName').textContent = name;
+}
+
+function finishSetup() {
+  const name = document.getElementById('setupTeamName').value.trim();
+  if (!name) { document.getElementById('setupTeamName').focus(); return; }
+  const teams = getTeams();
+  const activeId = getActiveTeamId();
+  const team = teams.find(t => t.id === activeId);
+  if (team) team.name = name;
+  else teams.push({ id: activeId, name });
+  saveTeams(teams);
+  state.teamName = name;
+  updateTopbar();
+  renderDash();
+  closeModal('setupModal');
+}
+
+function openTeamModal() {
+  renderTeamList();
+  openModal('teamModal');
+}
+
+function renderTeamList() {
+  const teams = getTeams();
+  const activeId = getActiveTeamId();
+  const el = document.getElementById('teamList');
+  if (!teams.length) { el.innerHTML = '<p style="color:var(--mute);font-size:13px">No teams yet.</p>'; return; }
+  el.innerHTML = teams.map(t => `
+    <div style="border:1px solid ${t.id===activeId?'var(--ink)':'var(--hairline)'};border-radius:var(--radius-sm);margin-bottom:6px;overflow:hidden">
+      <div style="display:flex;align-items:center;gap:8px;padding:10px;background:${t.id===activeId?'var(--canvas)':'var(--elevated)'}">
+        <div style="flex:1;font-size:13px;font-weight:${t.id===activeId?'600':'400'};color:var(--ink)">${t.name||'Unnamed team'}</div>
+        ${t.id===activeId?'<span style="font-size:11px;color:var(--mute)">Active</span>':''}
+        ${t.id!==activeId?`<button class="btn btn-outline btn-sm" onclick="switchTeam('${t.id}');closeModal('teamModal')">Switch</button>`:''}
+        ${teams.length>1&&t.id!==activeId?`<button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="confirmDeleteTeam('${t.id}','${(t.name||'').replace(/'/g,'')}')">Delete</button>`:''}
+      </div>
+      ${t.id===activeId?`
+      <div style="border-top:1px solid var(--hairline);padding:8px 10px;background:var(--elevated);display:flex;gap:6px">
+        <input class="form-control" id="renameTeamInput" value="${(t.name||'').replace(/"/g,'&quot;')}" placeholder="Team name" style="flex:1;font-size:12px" onkeydown="if(event.key==='Enter')renameActiveTeam()">
+        <button class="btn btn-outline btn-sm" onclick="renameActiveTeam()">Rename</button>
+      </div>`:''}
+    </div>`).join('');
+}
+
+function renameActiveTeam() {
+  const name = document.getElementById('renameTeamInput').value.trim();
+  if (!name) return;
+  const teams = getTeams();
+  const activeId = getActiveTeamId();
+  const team = teams.find(t => t.id === activeId);
+  if (team) { team.name = name; saveTeams(teams); }
+  state.teamName = name;
+  updateTopbar();
+  renderTeamList();
+  renderDash();
+  showToast('Team renamed');
+}
+
+function addTeam() {
+  const inp = document.getElementById('newTeamName');
+  const name = inp.value.trim();
+  if (!name) { showToast('Enter a team name'); return; }
+  const id = createTeam(name);
+  inp.value = '';
+  switchTeam(id);
+  closeModal('teamModal');
+  showToast('Team created: ' + name);
+}
+
+function confirmDeleteTeam(id, name) {
+  if (!confirm(`Delete "${name}" and all its data? This cannot be undone.`)) return;
+  deleteTeam(id);
+  // If we deleted the active team, switch to first remaining
+  const teams = getTeams();
+  if (teams.length) switchTeam(teams[0].id);
+  renderTeamList();
+}
+
+// ═══════════════════════════════════════════════════════════════
 //  HELPERS
 // ═══════════════════════════════════════════════════════════════
 function pct(v) { return (v*100).toFixed(1)+'%'; }
 function num(v, d=1) { return Number(v||0).toFixed(d); }
 function diffBadge(d) {
-  const map = { Beginner:'badge-green', Intermediate:'badge-blue', Advanced:'badge-orange', Elite:'badge-red' };
+  const map = { Beginner:'badge-gray', Intermediate:'badge-gray', Advanced:'badge-gray', Elite:'badge-gray' };
   return `<span class="badge ${map[d]||'badge-gray'}">${d}</span>`;
 }
 
@@ -991,17 +1248,17 @@ function renderDash() {
   let html = `
   <div class="page-title"><h1>${teamName}</h1><p>${players.length} players · ${state.plans.length} practice plans</p></div>
   <div class="stat-grid">
-    <div class="stat-tile"><div class="stat-tile-icon" style="background:var(--blue-50)">
-      <svg width="20" height="20" fill="none" stroke="var(--blue-600)" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+    <div class="stat-tile"><div class="stat-tile-icon" style="background:var(--accent-lt)">
+      <svg width="20" height="20" fill="none" stroke="var(--accent)" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
       <div><h2>${players.length}</h2><small>Total Players</small></div></div>
-    <div class="stat-tile"><div class="stat-tile-icon" style="background:#fff7ed">
-      <svg width="20" height="20" fill="none" stroke="var(--orange)" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-5"/></svg></div>
+    <div class="stat-tile"><div class="stat-tile-icon" style="background:var(--accent-lt)">
+      <svg width="20" height="20" fill="none" stroke="var(--accent)" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-5"/></svg></div>
       <div><h2>${withStats.length ? pct(avgHit) : '—'}</h2><small>Avg Hitting %</small></div></div>
-    <div class="stat-tile"><div class="stat-tile-icon" style="background:var(--green-100)">
-      <svg width="20" height="20" fill="none" stroke="var(--green)" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+    <div class="stat-tile"><div class="stat-tile-icon" style="background:var(--accent-lt)">
+      <svg width="20" height="20" fill="none" stroke="var(--ink)" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
       <div><h2>${withStats.length ? num(avgRcpt,2) : '—'}</h2><small>Avg Reception</small></div></div>
-    <div class="stat-tile"><div class="stat-tile-icon" style="background:#faf5ff">
-      <svg width="20" height="20" fill="none" stroke="#9333ea" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg></div>
+    <div class="stat-tile"><div class="stat-tile-icon" style="background:var(--gray-100)">
+      <svg width="20" height="20" fill="none" stroke="var(--gray-500)" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg></div>
       <div><h2>${state.plans.length}</h2><small>Practice Plans</small></div></div>
   </div>
   <div class="chart-grid">
@@ -1074,16 +1331,16 @@ function renderDash() {
     plansEl.innerHTML = state.plans.slice(0,4).map(pl => `
       <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--gray-100)">
         <div><strong style="font-size:13px">${pl.title}</strong><br><small style="color:var(--gray-500)">${pl.playerName||'Team'}</small></div>
-        <span class="badge badge-blue">${pl.totalMinutes||0} min</span>
+        <span class="badge badge-gray">${pl.totalMinutes||0} min</span>
       </div>`).join('');
   }
 
   // Quick actions
   document.getElementById('dashActions').innerHTML = [
-    { label:'Enter Stats', desc:'Add players and enter statistics', page:'add-players', color:'var(--blue-600)' },
-    { label:'AI Analysis', desc:'Generate player scouting reports', page:'players', color:'var(--orange)' },
-    { label:'Practice Plan', desc:'AI-personalized drill recommendations', page:'plans', color:'var(--green)' },
-    { label:'Team Report', desc:'Full team analysis and focus areas', page:'reports', color:'#9333ea' },
+    { label:'Enter Stats', desc:'Add players and enter statistics', page:'add-players', color:'var(--gray-900)' },
+    { label:'AI Analysis', desc:'Generate player scouting reports', page:'players', color:'var(--gray-900)' },
+    { label:'Practice Plan', desc:'AI-personalized drill recommendations', page:'plans', color:'var(--gray-900)' },
+    { label:'Team Report', desc:'Full team analysis and focus areas', page:'reports', color:'var(--gray-900)' },
   ].map(a => `
     <div onclick="nav(document.querySelector('[data-page=${a.page}]'))" style="display:flex;align-items:center;justify-content:space-between;padding:10px;margin-bottom:6px;border:1px solid var(--gray-200);border-radius:8px;cursor:pointer;transition:.15s" onmouseover="this.style.background='var(--gray-50)'" onmouseout="this.style.background='#fff'">
       <div>
@@ -1208,7 +1465,7 @@ function openPlayerModal(id) {
   let html = `
   <div class="flex-gap mb-4">
     <span class="badge badge-gray">${posLabel(p)}</span>
-    ${a ? '<span class="badge badge-green">AI Analyzed</span>' : ''}
+    ${a ? '<span class="badge badge-gray">AI Analyzed</span>' : ''}
   </div>`;
 
   if (hasStats) {
@@ -1250,7 +1507,7 @@ function openPlayerModal(id) {
   if (!hasStats) html += `<div class="alert alert-blue">This player has no stats yet. Add stats from the "Enter Stats" page.</div>`;
   if (hasStats && !a) html += `
     <div class="mt-4">
-      <button class="btn btn-orange" onclick="closeModal('playerModal');analyzePlayer('${id}')">
+      <button class="btn btn-primary" onclick="closeModal('playerModal');analyzePlayer('${id}')">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
         Run AI Analysis
       </button>
@@ -1261,13 +1518,13 @@ function openPlayerModal(id) {
     html += `<div class="section-divider">Practice Plans (${plans.length})</div>`;
     plans.forEach(pl => {
       html += `<div class="plan-card">
-        <div class="plan-header"><h3>${pl.title}</h3><span class="badge badge-blue">${pl.totalMinutes} min</span></div>
+        <div class="plan-header"><h3>${pl.title}</h3><span class="badge badge-gray">${pl.totalMinutes} min</span></div>
         ${pl.drills.map((d,i) => `<div class="plan-drill">
           <div class="plan-num">${i+1}</div>
           <div class="plan-drill-info">
             <strong>${d.name}</strong> <span class="badge badge-gray" style="font-size:10px">${d.duration} min</span>
             <div class="why">${d.rationale}</div>
-            ${d.triggeringStat ? `<div class="trigger">📊 ${d.triggeringStat}</div>` : ''}
+            ${d.triggeringStat ? `<div class="trigger">Triggered by: ${d.triggeringStat}</div>` : ''}
           </div>
         </div>`).join('')}
       </div>`;
@@ -1311,7 +1568,7 @@ function addManualRow() {
 function saveManualPlayers() {
   const tName = document.getElementById('teamNameInput').value.trim() || 'My Team';
   state.teamName = tName;
-  document.getElementById('teamName').textContent = tName;
+  updateTopbar();
 
   const rows = document.querySelectorAll('#manualRows > div');
   let added = 0;
@@ -1386,7 +1643,7 @@ function mapStatRow(obj) {
   return p;
 }
 
-function dropOver(e) { e.preventDefault(); document.getElementById('dropzone').style.borderColor='var(--blue-500)'; }
+function dropOver(e) { e.preventDefault(); document.getElementById('dropzone').style.borderColor='var(--ink)'; }
 function dropFile(e) {
   e.preventDefault();
   document.getElementById('dropzone').style.borderColor='var(--gray-200)';
@@ -1415,8 +1672,8 @@ function showImportPreview(players, targetId, importFn) {
   if (players.length === 0) { el.innerHTML = '<div class="alert alert-red">No players found. Check your column headers.</div>'; return; }
   el.innerHTML = `
     <div class="flex-between mb-3">
-      <span class="badge badge-green">${players.length} players found</span>
-      <button class="btn btn-orange btn-sm" onclick="importParsed('${targetId}')">Import ${players.length} Players</button>
+      <span class="badge badge-gray">${players.length} players found</span>
+      <button class="btn btn-primary btn-sm" onclick="importParsed('${targetId}')">Import ${players.length} Players</button>
     </div>
     <div style="max-height:180px;overflow-y:auto;border:1px solid var(--gray-200);border-radius:8px">
       ${players.map(p=>`<div style="display:flex;justify-content:space-between;padding:8px 12px;border-bottom:1px solid var(--gray-100);font-size:13px">
@@ -1573,7 +1830,7 @@ Rules:
           </tbody>
         </table>
       </div>
-      <button class="btn btn-orange" onclick="importScannedStats()">
+      <button class="btn btn-primary" onclick="importScannedStats()">
         Import ${players.length} Player${players.length !== 1 ? 's' : ''}
       </button>`;
 
@@ -1600,7 +1857,7 @@ function importScannedStats() {
   const rows = document.querySelectorAll('#scanResultsBody tr');
   const tName = document.getElementById('teamNameInput').value.trim() || 'My Team';
   state.teamName = tName;
-  document.getElementById('teamName').textContent = tName;
+  updateTopbar();
 
   rows.forEach(row => {
     const inputs = row.querySelectorAll('input, select');
@@ -1651,14 +1908,14 @@ function renderDrills() {
     if (list.length === 0) { el.innerHTML = '<div class="empty-state"><p>No drills match</p></div>'; return; }
     el.innerHTML = list.map(d => `
       <div class="drill-card">
-        <div class="drill-meta">${diffBadge(d.difficulty)}<span class="badge badge-gray">${d.category}</span><span class="badge badge-blue">⏱ ${d.duration} min</span>${d.builtin?'':'<span class="badge badge-orange">Custom</span>'}</div>
+        <div class="drill-meta">${diffBadge(d.difficulty)}<span class="badge badge-gray">${d.category}</span><span class="badge badge-gray">${d.duration} min</span>${d.builtin?'':'<span class="badge badge-gray">Custom</span>'}</div>
         <h4>${d.name}</h4>
         <p>${d.description}</p>
         ${d.skills?.length ? `<div style="margin-bottom:8px">${d.skills.map(s=>`<span class="tag">${s}</span>`).join('')}</div>` : ''}
         <details>
-          <summary style="font-size:12px;color:var(--blue-600);font-weight:600;margin-bottom:6px">▶ Setup &amp; Coaching Points</summary>
+          <summary style="font-size:12px;color:var(--ink);font-weight:600;margin-bottom:6px">Setup &amp; Coaching Points</summary>
           ${d.setup ? `<div class="drill-detail"><strong>Setup:</strong> ${d.setup}</div>` : ''}
-          ${d.points?.length ? `<div class="drill-detail"><strong>Coaching Points:</strong><ul style="margin-top:4px;padding-left:16px">${d.points.map(pt=>`<li style="font-size:12px;color:var(--gray-600);margin-bottom:3px">${pt}</li>`).join('')}</ul></div>` : ''}
+          ${d.points?.length ? `<div class="drill-detail"><strong>Coaching Points:</strong><ul style="margin-top:4px;padding-left:16px">${d.points.map(pt=>`<li style="font-size:12px;color:var(--body);margin-bottom:3px">${pt}</li>`).join('')}</ul></div>` : ''}
         </details>
       </div>`).join('');
   };
@@ -1826,25 +2083,25 @@ function renderPlans() {
           <h3>${pl.title}</h3>
           <div style="display:flex;gap:6px;margin-top:4px">
             ${pl.focusAreas?.map(a=>`<span class="badge badge-gray">${a}</span>`).join('')||''}
-            ${pl.playerName ? `<span class="badge badge-blue">${pl.playerName}</span>` : ''}
+            ${pl.playerName ? `<span class="badge badge-gray">${pl.playerName}</span>` : ''}
           </div>
         </div>
         <div style="display:flex;gap:6px;align-items:center">
-          <span class="badge badge-blue">⏱ ${pl.totalMinutes} min</span>
-          ${pl.aiGenerated ? '<span class="badge badge-orange">AI</span>' : ''}
+          <span class="badge badge-gray">${pl.totalMinutes} min</span>
+          ${pl.aiGenerated ? '<span class="badge badge-gray">AI</span>' : ''}
           <button class="btn btn-ghost btn-sm" onclick="deletePlan('${pl.id}')">
             <svg width="13" height="13" fill="none" stroke="var(--red)" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
           </button>
         </div>
       </div>
-      ${pl.notes ? `<div style="padding:10px 18px;font-size:13px;color:var(--gray-600);background:var(--gray-50);font-style:italic">${pl.notes}</div>` : ''}
+      ${pl.notes ? `<div style="padding:10px 18px;font-size:13px;color:var(--body);background:var(--gray-50);font-style:italic">${pl.notes}</div>` : ''}
       ${pl.drills.map((d,i) => `
         <div class="plan-drill">
           <div class="plan-num">${i+1}</div>
           <div class="plan-drill-info">
             <strong>${d.name}</strong> <span class="badge badge-gray" style="font-size:10px">${d.duration} min</span>
             <div class="why">${d.rationale}</div>
-            ${d.triggeringStat ? `<div class="trigger">📊 Triggered by: ${d.triggeringStat}</div>` : ''}
+            ${d.triggeringStat ? `<div class="trigger">Triggered by: ${d.triggeringStat}</div>` : ''}
           </div>
         </div>`).join('')}
     </div>`).join('');
@@ -1919,8 +2176,8 @@ function renderReport(r) {
     <div class="card-body pt-0">
       <div class="scouting-report">${r.teamReport}</div>
       <div class="stat-grid" style="grid-template-columns:repeat(2,1fr);margin-bottom:16px">
-        <div class="stat-tile"><div class="stat-tile-icon" style="background:var(--blue-50)">📊</div><div><h2>${(avgHit*100).toFixed(1)}%</h2><small>Avg Hitting %</small></div></div>
-        <div class="stat-tile"><div class="stat-tile-icon" style="background:var(--green-100)">📈</div><div><h2>${avgRcpt.toFixed(2)}</h2><small>Avg Reception</small></div></div>
+        <div class="stat-tile"><div class="stat-tile-icon" style="background:var(--accent-lt)"><svg width="20" height="20" fill="none" stroke="var(--ink)" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div><div><h2>${(avgHit*100).toFixed(1)}%</h2><small>Avg Hitting %</small></div></div>
+        <div class="stat-tile"><div class="stat-tile-icon" style="background:var(--accent-lt)"><svg width="20" height="20" fill="none" stroke="var(--ink)" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><div><h2>${avgRcpt.toFixed(2)}</h2><small>Avg Reception</small></div></div>
       </div>
       <div class="two-col mb-4">
         <div>
@@ -1937,8 +2194,8 @@ function renderReport(r) {
         ${r.mostCommonWeaknesses.map(w=>`<span class="badge badge-yellow">${w}</span>`).join('')}
       </div>
       <p class="section-divider">Recommended Team Practice Focus</p>
-      ${r.suggestedFocus.map((f,i)=>`<div style="display:flex;gap:10px;align-items:flex-start;padding:10px;margin-bottom:6px;background:var(--blue-50);border-radius:8px">
-        <span style="width:22px;height:22px;background:var(--blue-600);color:#fff;border-radius:50%;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">${i+1}</span>
+      ${r.suggestedFocus.map((f,i)=>`<div style="display:flex;gap:10px;align-items:flex-start;padding:10px;margin-bottom:6px;background:var(--canvas);border-radius:8px">
+        <span style="width:22px;height:22px;background:var(--ink);color:#fff;border-radius:50%;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">${i+1}</span>
         <p style="font-size:13px;color:var(--gray-700)">${f}</p></div>`).join('')}
     </div>
   </div>`;
@@ -2020,7 +2277,7 @@ function updateOnlineStatus() {
   const offline = !navigator.onLine;
   document.getElementById('offlineBanner').classList.toggle('show', offline);
   document.getElementById('offlineBadge').style.display = offline ? 'inline' : 'none';
-  document.getElementById('onlineBadge').style.display = offline ? 'none' : 'inline';
+  // onlineBadge removed (sidebar gone)
 }
 window.addEventListener('online',  updateOnlineStatus);
 window.addEventListener('offline', updateOnlineStatus);
@@ -2151,14 +2408,7 @@ function renderMatchSetup() {
       lineup: Array(6).fill(null),
       libero: null,            // designated libero player obj
       rotationSystem: '5-1',
-      setterAId: null,          // setter A (or only setter in 5-1)
-      setterBId: null,          // setter B (6-2 only)
-      setterAPlaysAround: true, // false = has a front-row sub
-      setterBPlaysAround: true,
-      setterASub: null,         // player id who subs in for setter A in front row
-      setterBSub: null,
-      setterASubOn: false,      // true = setter A's sub is currently on court
-      setterBSubOn: false,
+
       subCount: 0,              // subs made this set (excludes libero swaps)
       serveDesignation: 'bothMiddles',
       servingMiddleId: null,   // when liberoServes: which MB is the serving one
@@ -2244,65 +2494,19 @@ function renderMatchSetup() {
         </div>`;
       })() : ''}
 
-      <!-- ── 5. SETTER CONFIG (optional) ── -->
-      ${(() => {
-        const lineupPlayers = match.lineup.filter(Boolean);
-        const benchPlayers  = match.bench || [];
-        const allAvail = [...lineupPlayers, ...benchPlayers];
-
-        function setterBlock(label, colorVar, idKey, playsAroundKey, subKey) {
-          const setterId = match[idKey];
-          const playsAround = match[playsAroundKey] !== false; // default true
-          const subId = match[subKey];
-          return `
-            <div style="border:1px solid var(--gray-200);border-radius:10px;padding:12px;margin-bottom:10px">
-              <div style="font-size:11px;font-weight:800;color:${colorVar};margin-bottom:6px">${label}</div>
-              <select class="form-control" style="font-size:12px;margin-bottom:8px" onchange="match['${idKey}']=this.value;renderMatchSetup()">
-                <option value="">— select player —</option>
-                ${allAvail.map(p => `<option value="${p.id}" ${setterId===p.id?'selected':''}>#${p.number||'?'} ${p.name} · ${posLabel(p)}</option>`).join('')}
-              </select>
-              ${setterId ? `
-              <div style="font-size:11px;margin-bottom:6px;font-weight:600">When in front row:</div>
-              <div style="display:flex;gap:8px;margin-bottom:8px">
-                <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:12px">
-                  <input type="radio" name="${playsAroundKey}" value="around" ${playsAround?'checked':''} onchange="match['${playsAroundKey}']=true;renderMatchSetup()">
-                  Plays all the way around
-                </label>
-                <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:12px">
-                  <input type="radio" name="${playsAroundKey}" value="sub" ${!playsAround?'checked':''} onchange="match['${playsAroundKey}']=false;renderMatchSetup()">
-                  Has a sub
-                </label>
-              </div>
-              ${!playsAround ? `
-                <select class="form-control" style="font-size:12px" onchange="match['${subKey}']=this.value">
-                  <option value="">— select front-row sub —</option>
-                  ${allAvail.filter(p => p.id !== setterId).map(p => `<option value="${p.id}" ${subId===p.id?'selected':''}>#${p.number||'?'} ${p.name} · ${posLabel(p)}</option>`).join('')}
-                </select>
-                <small style="color:var(--gray-400);font-size:10px">Auto-subbed in when ${label} rotates to front row.</small>
-              ` : ''}
-              ` : ''}
-            </div>`;
-        }
-
-        return `<div class="section-divider" style="margin-top:4px">Setter (optional)</div>
-          <div style="font-size:11px;color:var(--gray-500);margin-bottom:10px">If the setter has a front-row sub, they'll auto-swap in when the setter rotates front.</div>
-          ${setterBlock('Setter','var(--blue-600)','setterAId','setterAPlaysAround','setterASub')}`;
-      })()}
 
       <!-- ── 6. SERVE / RECEIVE ── -->
       <div class="section-divider" style="margin-top:4px">First Set — Starting On</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
-        <div onclick="match.isServing=true;renderMatchSetup()" style="cursor:pointer;text-align:center;padding:10px;border-radius:10px;border:2px solid ${match.isServing!==false?'var(--blue-500)':'var(--gray-200)'};background:${match.isServing!==false?'var(--blue-50)':'#fff'}">
-          <div style="font-size:16px">🏐</div>
-          <div style="font-weight:700;font-size:13px;color:${match.isServing!==false?'var(--blue-600)':'var(--gray-700)'}">Serve</div>
+        <div onclick="match.isServing=true;renderMatchSetup()" style="cursor:pointer;text-align:center;padding:10px;border-radius:10px;border:2px solid ${match.isServing!==false?'var(--ink)':'var(--hairline)'};background:${match.isServing!==false?'var(--elevated)':'var(--canvas)'}">
+          <div style="font-weight:700;font-size:13px;color:${match.isServing!==false?'var(--ink)':'var(--mute)'}">Serve</div>
         </div>
-        <div onclick="match.isServing=false;renderMatchSetup()" style="cursor:pointer;text-align:center;padding:10px;border-radius:10px;border:2px solid ${match.isServing===false?'var(--blue-500)':'var(--gray-200)'};background:${match.isServing===false?'var(--blue-50)':'#fff'}">
-          <div style="font-size:16px">🤲</div>
-          <div style="font-weight:700;font-size:13px;color:${match.isServing===false?'var(--blue-600)':'var(--gray-700)'}">Receive</div>
+        <div onclick="match.isServing=false;renderMatchSetup()" style="cursor:pointer;text-align:center;padding:10px;border-radius:10px;border:2px solid ${match.isServing===false?'var(--ink)':'var(--hairline)'};background:${match.isServing===false?'var(--elevated)':'var(--canvas)'}">
+          <div style="font-weight:700;font-size:13px;color:${match.isServing===false?'var(--ink)':'var(--mute)'}">Receive</div>
         </div>
       </div>
 
-      <button class="btn btn-orange" style="width:100%;margin-top:4px;padding:12px" onclick="startMatch()" ${match.lineup.filter(Boolean).length < 6 ? 'disabled' : ''}>
+      <button class="btn btn-primary" style="width:100%;margin-top:4px;padding:12px" onclick="startMatch()" ${match.lineup.filter(Boolean).length < 6 ? 'disabled' : ''}>
         Start Match →
       </button>
     </div>
@@ -2345,7 +2549,7 @@ function selectLineupSlot(posNum) {
   setupSelectedSlot = posNum;
   document.querySelectorAll('.lineup-slot, .court-pos').forEach(s => s.style.outline = '');
   const el = document.getElementById(`lslot-${posNum === 'libero' ? 'libero' : posNum}`);
-  if (el) el.style.outline = '2px solid var(--blue-500)';
+  if (el) el.style.outline = '2px solid var(--ink)';
 }
 function clearLineupSlot(posNum) {
   const prev = match.lineup[posNum-1];
@@ -2400,19 +2604,8 @@ function startMatch() {
     }
   }
 
-  // Detect if a setter already has their sub on court at match start
-  // (e.g. Setter B starts on bench because their opposite is in the starting lineup)
-  [['setterAId','setterAPlaysAround','setterASub','setterASubOn'],
-   ['setterBId','setterBPlaysAround','setterBSub','setterBSubOn']].forEach(([idKey,,subKey,onKey]) => {
-    const setterId = match[idKey];
-    const subId    = match[subKey];
-    if (!setterId || !subId) return;
-    const setterInLineup = match.lineup.some(p => p?.id === setterId);
-    const subInLineup    = match.lineup.some(p => p?.id === subId);
-    if (!setterInLineup && subInLineup) match[onKey] = true; // sub started on court
-  });
 
-  document.getElementById('liveDot').style.display = 'inline-block';
+  document.getElementById('liveDot').classList.add('show');
   saveMatchLocal();
   renderLiveTracker();
 }
@@ -2427,13 +2620,13 @@ async function saveMatchLocal() {
   const idx = state.matches ? state.matches.findIndex(m => m.id === match.id) : -1;
   if (!state.matches) state.matches = [];
   if (idx >= 0) state.matches[idx] = match; else state.matches.unshift(match);
-  localStorage.setItem('vai_matches', JSON.stringify(state.matches));
+  localStorage.setItem(teamKey('matches'), JSON.stringify(state.matches));
 }
 
 async function loadMatchesFromDB() {
   const all = await dbGetAll('matches');
   state.matches = all.sort((a,b) => new Date(b.createdAt)-new Date(a.createdAt));
-  localStorage.setItem('vai_matches', JSON.stringify(state.matches));
+  localStorage.setItem(teamKey('matches'), JSON.stringify(state.matches));
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -2469,8 +2662,8 @@ function renderLiveTracker() {
     </div>
     <div class="live-status-row">
       <span>Set ${setNum} · ${getRotationLabel()}</span>
-      <span class="live-serving-pill" style="${match.isServing!==false?'background:rgba(34,197,94,.3);color:#86efac':'background:rgba(255,255,255,.1);color:rgba(255,255,255,.65)'}">
-        ${match.isServing!==false?'🏐 Serving':'🤲 Receiving'}
+      <span class="live-serving-pill">
+        ${match.isServing!==false?'Serving':'Receiving'}
       </span>
       <span>S:${match.servePoints||0} R:${match.receivePoints||0}</span>
       ${setBadges}
@@ -2490,7 +2683,7 @@ function renderLiveTracker() {
       ${[1,2,3,4,5,6].map(n => `<option value="${n}" ${(match.rotation%6)+1===n?'selected':''}>Rot ${n}</option>`).join('')}
     </select>
     <button class="btn btn-outline btn-sm" onclick="rotateTeam()">↻ Rotate</button>
-    <button class="btn btn-sm" style="background:var(--blue-600);color:#fff" onclick="openSubModal()">⇄ Sub · ${match.subCount||0}/15</button>
+    <button class="btn btn-sm" style="background:var(--ink);color:#fff" onclick="openSubModal()">⇄ Sub · ${match.subCount||0}/15</button>
     <button class="btn btn-sm" style="background:#fee2e2;color:#dc2626;border:1px solid #fca5a5" onclick="undoLastRally()">↩ Undo</button>
     <div style="margin-left:auto;display:flex;gap:6px">
       <button class="btn btn-outline btn-sm" onclick="openEndSetModal()">End Set ${setNum}</button>
@@ -2510,7 +2703,7 @@ function renderLiveTracker() {
 
   <!-- Stats (collapsible) -->
   <details style="margin-bottom:16px">
-    <summary style="cursor:pointer;padding:10px 14px;background:var(--gray-50);border-radius:10px;border:1px solid var(--gray-200);font-size:12px;font-weight:700;color:var(--gray-600);list-style:none;display:flex;align-items:center;justify-content:space-between;-webkit-tap-highlight-color:transparent">
+    <summary style="cursor:pointer;padding:10px 14px;background:var(--gray-50);border-radius:10px;border:1px solid var(--gray-200);font-size:12px;font-weight:700;color:var(--body);list-style:none;display:flex;align-items:center;justify-content:space-between;-webkit-tap-highlight-color:transparent">
       Set ${setNum} Stats <span style="opacity:.5;font-size:10px">tap to view ▾</span>
     </summary>
     <div style="overflow-x:auto;margin-top:8px;border-radius:10px;border:1px solid var(--gray-200);background:#fff">
@@ -2750,8 +2943,6 @@ function applyRotationSwaps() {
     }
   }
 
-  // Setter front-row auto-sub
-  applySetterSubs();
 }
 
 function rotateTeam() {
@@ -2780,64 +2971,13 @@ function setRotation(value) {
   showToast('Rotation ' + n + ' — ' + shortName(server?.name||'?') + ' serving');
 }
 
-function applySetterSubs() {
-  // For each configured setter (A and B), check if they just rotated to front row
-  // and have a sub assigned. If so, execute the sub (counts toward subCount).
-  [['setterAId','setterAPlaysAround','setterASub','setterASubOn'],
-   ['setterBId','setterBPlaysAround','setterBSub','setterBSubOn']].forEach(([idKey, aroundKey, subKey, onKey]) => {
-    const setterId = match[idKey];
-    if (!setterId || match[aroundKey] !== false) return; // plays around or not configured
-    const subId = match[subKey];
-    if (!subId) return;
-
-    const setterIdx = match.lineup.findIndex(p => p?.id === setterId);
-    const subInState = match[onKey]; // is sub currently on court?
-
-    if (setterIdx >= 0) {
-      // Setter is on court — check their court position
-      const courtPos = ((setterIdx - match.rotation + 6) % 6) + 1;
-      if (FRONT_ROW_POS.has(courtPos) && !subInState) {
-        // Setter just entered front row → bring sub in
-        const subPlayer = state.players.find(p => p.id === subId) || match.bench.find(p => p.id === subId);
-        if (subPlayer) {
-          match.bench.push(match.lineup[setterIdx]); // setter goes to bench
-          match.lineup[setterIdx] = subPlayer;
-          match.bench = match.bench.filter(p => p.id !== subId);
-          if (!match.playerStats[subPlayer.id]) match.playerStats[subPlayer.id] = blankPlayerStats();
-          match[onKey] = true;
-          match.subCount = (match.subCount || 0) + 1;
-          match.subHistory.push({ out: match.bench[match.bench.length-1]?.name||'Setter', in: subPlayer.name, set: match.currentSet+1, time: Date.now(), auto: true });
-          showToast(`↕ ${shortName(subPlayer.name)} in for setter (front row)`);
-        }
-      }
-    } else {
-      // Setter is off court (sub is on). Check if the sub is now in back row → setter back in
-      const subIdx = match.lineup.findIndex(p => p?.id === subId);
-      if (subIdx >= 0 && subInState) {
-        const courtPos = ((subIdx - match.rotation + 6) % 6) + 1;
-        if (BACK_ROW_POS.has(courtPos)) {
-          const setterPlayer = match.bench.find(p => p.id === setterId);
-          if (setterPlayer) {
-            match.bench.push(match.lineup[subIdx]); // sub goes back to bench
-            match.lineup[subIdx] = setterPlayer;
-            match.bench = match.bench.filter(p => p.id !== setterId);
-            match[onKey] = false;
-            match.subCount = (match.subCount || 0) + 1;
-            match.subHistory.push({ out: match.bench[match.bench.length-1]?.name||'Sub', in: setterPlayer.name, set: match.currentSet+1, time: Date.now(), auto: true });
-            showToast(`↕ ${shortName(setterPlayer.name)} back in (back row)`);
-          }
-        }
-      }
-    }
-  });
-}
 
 function openSubModal() {
   const onCourt = match.lineup.filter(Boolean);
   const onBench = match.bench;
   const body = document.getElementById('subModalBody');
   body.innerHTML = `
-    <p style="font-size:13px;color:var(--gray-600);margin-bottom:16px">Select the player coming <strong>OFF</strong> the court, then the player coming <strong>ON</strong>.</p>
+    <p style="font-size:13px;color:var(--body);margin-bottom:16px">Select the player coming <strong>OFF</strong> the court, then the player coming <strong>ON</strong>.</p>
     <div class="form-row">
       <div class="form-group">
         <label>Sub OUT (leaving court)</label>
@@ -2854,11 +2994,11 @@ function openSubModal() {
         </select>
       </div>
     </div>
-    <button class="btn btn-orange" onclick="confirmSub()">Confirm Substitution</button>
+    <button class="btn btn-primary" onclick="confirmSub()">Confirm Substitution</button>
     <div id="subError" style="margin-top:10px"></div>
     ${match.subHistory.length > 0 ? `
       <div class="section-divider">Sub History</div>
-      ${match.subHistory.slice(-6).reverse().map(s => `<div style="font-size:12px;color:var(--gray-600);padding:4px 0">${s.out} → ${s.in} (Set ${s.set})</div>`).join('')}` : ''}`;
+      ${match.subHistory.slice(-6).reverse().map(s => `<div style="font-size:12px;color:var(--body);padding:4px 0">${s.out} → ${s.in} (Set ${s.set})</div>`).join('')}` : ''}`;
   openModal('subModal');
 }
 
@@ -3080,11 +3220,11 @@ function openEndSetModal() {
     <div style="text-align:center;margin-bottom:20px">
       <div style="font-size:48px;font-weight:900">${set.us} – ${set.them}</div>
       <div style="font-size:15px;font-weight:700;color:${usWon?'var(--green)':'var(--red)'};margin-top:6px">
-        ${usWon ? '✓ Set Won' : '✗ Set Lost'}
+        ${usWon ? 'Set Won' : 'Set Lost'}
       </div>
     </div>
     <div style="display:flex;flex-direction:column;gap:10px">
-      <button class="btn btn-orange" style="width:100%;padding:12px;font-size:15px" onclick="confirmEndSet()">
+      <button class="btn btn-primary" style="width:100%;padding:12px;font-size:15px" onclick="confirmEndSet()">
         Confirm — Start Set ${setNum+1}
       </button>
       <button class="btn btn-danger" style="width:100%;padding:10px" onclick="closeModal('endSetModal');endMatch()">
@@ -3107,8 +3247,6 @@ function confirmEndSet() {
   match.servePoints   = 0;
   match.receivePoints = 0;
   match.subCount      = 0;
-  match.setterASubOn  = false;
-  match.setterBSubOn  = false;
   match.undoStack     = [];
   closeModal('endSetModal');
   saveMatchLocal();
@@ -3124,7 +3262,7 @@ function endMatch() {
   }
   match.status = 'ended';
   match.endedAt = new Date().toISOString();
-  document.getElementById('liveDot').style.display = 'none';
+  document.getElementById('liveDot').classList.remove('show');
 
   // push player stats into main state.players for dashboard / analysis
   [...match.lineup.filter(Boolean), ...match.bench].forEach(mp => {
@@ -3193,7 +3331,7 @@ async function renderMatchHistory() {
       <div style="padding:10px 18px;border-top:1px solid var(--gray-100);display:flex;gap:8px;flex-wrap:wrap">
         <button class="btn btn-outline btn-sm" onclick="showMatchDetail('${m.id}')">View Stats</button>
         ${!m.aiAnalysis && m.status==='ended'
-          ? `<button class="btn btn-orange btn-sm" onclick="generateMatchAnalysis('${m.id}')">⚡ AI Analysis + Practice Plan</button>`
+          ? `<button class="btn btn-primary btn-sm" onclick="generateMatchAnalysis('${m.id}')">AI Analysis + Practice Plan</button>`
           : m.aiAnalysis ? `<button class="btn btn-outline btn-sm" onclick="showMatchDetail('${m.id}')">View AI Report</button>` : ''}
         <button class="btn btn-ghost btn-sm" onclick="resumeMatchSetup('${m.id}')" style="${m.status==='live'?'':'display:none'}">Resume Live</button>
         <button class="btn btn-ghost btn-sm" style="margin-left:auto;color:var(--red)" onclick="deleteMatch('${m.id}')">
@@ -3201,7 +3339,7 @@ async function renderMatchHistory() {
           Delete
         </button>
       </div>
-      ${m.aiAnalysis ? `<div style="padding:10px 18px;background:var(--blue-50);border-top:1px solid var(--blue-100);font-size:12px;color:var(--blue-700)">✓ AI Analysis complete — practice plan generated</div>` : ''}
+      ${m.aiAnalysis ? `<div style="padding:10px 18px;background:var(--canvas);border-top:1px solid var(--hairline);font-size:12px;color:var(--mute)">AI Analysis complete — practice plan generated</div>` : ''}
     </div>`;
   }).join('');
 }
@@ -3299,12 +3437,12 @@ function showMatchDetail(matchId) {
       ${m.aiAnalysis.practicePlan ? `
         <div class="section-divider">Generated Practice Plan</div>
         <div class="plan-card">
-          <div class="plan-header"><h3>${m.aiAnalysis.practicePlan.title}</h3><span class="badge badge-blue">${m.aiAnalysis.practicePlan.totalMinutes} min</span></div>
+          <div class="plan-header"><h3>${m.aiAnalysis.practicePlan.title}</h3><span class="badge badge-gray">${m.aiAnalysis.practicePlan.totalMinutes} min</span></div>
           ${(m.aiAnalysis.practicePlan.drills||[]).map((d,i)=>`<div class="plan-drill">
             <div class="plan-num">${i+1}</div>
             <div class="plan-drill-info"><strong>${d.name}</strong> <span class="badge badge-gray">${d.duration} min</span>
               <div class="why">${d.rationale}</div>
-              ${d.triggeringStat?`<div class="trigger">📊 ${d.triggeringStat}</div>`:''}
+              ${d.triggeringStat?`<div class="trigger">Triggered by: ${d.triggeringStat}</div>`:''}
             </div></div>`).join('')}
         </div>` : ''}` : ''}
     <div class="section-divider">Player Stats</div>
@@ -3323,7 +3461,7 @@ function resumeMatchSetup(matchId) {
   match = m;
   nav(document.querySelector('[data-page=match]'));
   if (match.status === 'live') {
-    document.getElementById('liveDot').style.display = 'inline-block';
+    document.getElementById('liveDot').classList.add('show');
     renderLiveTracker();
   } else {
     renderMatchSetup();
@@ -3445,9 +3583,39 @@ function newMatch() {
 // load match history on boot
 loadMatchesFromDB().then(() => {
   if (state.matches?.some(m => m.status === 'live')) {
-    document.getElementById('liveDot').style.display = 'inline-block';
+    document.getElementById('liveDot').classList.add('show');
   }
 });
+</script>
+
+</div><!-- /#appRoot -->
+
+<script>
+  // ═══════════════════════════════════════════════════════════════
+  //  CLERK AUTH GATE
+  // ═══════════════════════════════════════════════════════════════
+  window.addEventListener('load', async function () {
+    await Clerk.load();
+
+    function showApp() {
+      document.getElementById('authGate').style.display = 'none';
+      document.getElementById('appRoot').style.display = '';
+      const mountEl = document.getElementById('userButton');
+      if (mountEl && !mountEl.dataset.mounted) {
+        Clerk.mountUserButton(mountEl);
+        mountEl.dataset.mounted = '1';
+      }
+    }
+
+    if (Clerk.user) {
+      showApp();
+    } else {
+      Clerk.mountSignIn(document.getElementById('clerkAuthBox'));
+      Clerk.addListener(({ user }) => {
+        if (user) showApp();
+      });
+    }
+  });
 </script>
 </body>
 </html>
